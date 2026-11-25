@@ -41,7 +41,7 @@
             --btn-active-bg: #092610;
         }
 
-        .crt-stage.is-cooldown {
+        .esz-stage.is-cooldown {
             --fg: #d8d8d8;
             --bright: #ffffff;
             --muted: #7a7a7a;
@@ -93,24 +93,24 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .crt-svg-defs {
+        .esz-svg-defs {
             position: absolute;
             width: 0;
             height: 0;
             pointer-events: none;
         }
 
-        .crt-stage {
+        .esz-stage {
             position: fixed;
             inset: 0;
             width: 100vw;
             height: 100vh;
             background: #000000;
             overflow: hidden;
-            filter: url(#crt-barrel);
+            filter: url(#esz-barrel);
         }
 
-        .crt-bezel {
+        .esz-bezel {
             position: fixed;
             inset: 14px;
             border: 2px solid var(--bezel-border);
@@ -120,7 +120,7 @@
             z-index: 1;
         }
 
-        .crt-stage.is-cooldown .crt-bezel {
+        .esz-stage.is-cooldown .esz-bezel {
             animation: bezelRedFlash 1.4s ease-in-out infinite;
         }
 
@@ -135,7 +135,7 @@
             }
         }
 
-        .crt-cooldown-tint {
+        .esz-cooldown-tint {
             position: fixed;
             inset: 14px;
             pointer-events: none;
@@ -144,11 +144,11 @@
             display: none;
         }
 
-        .crt-stage.is-cooldown .crt-cooldown-tint {
+        .esz-stage.is-cooldown .esz-cooldown-tint {
             display: block;
         }
 
-        .crt-bezel-vignette {
+        .esz-bezel-vignette {
             position: absolute;
             inset: 0;
             pointer-events: none;
@@ -158,7 +158,7 @@
                 inset 0 0 28px var(--bezel-glow);
         }
 
-        .crt-expand-svg {
+        .esz-expand-svg {
             position: absolute;
             inset: 0;
             width: 100%;
@@ -168,16 +168,16 @@
             display: none;
         }
 
-        .crt-expand-svg.is-visible {
+        .esz-expand-svg.is-visible {
             display: block;
         }
 
-        .crt-expand-svg line {
+        .esz-expand-svg line {
             stroke: var(--line-stroke);
             stroke-width: 1.5;
         }
 
-        .crt-axis-layer {
+        .esz-axis-layer {
             position: absolute;
             inset: 0;
             pointer-events: none;
@@ -185,16 +185,16 @@
             display: none;
         }
 
-        .crt-axis-layer.is-active {
+        .esz-axis-layer.is-active {
             display: block;
         }
 
-        .crt-axis-layer.is-locked-only .crt-axis-x,
-        .crt-axis-layer.is-locked-only .crt-axis-y {
+        .esz-axis-layer.is-locked-only .esz-axis-x,
+        .esz-axis-layer.is-locked-only .esz-axis-y {
             display: none;
         }
 
-        .crt-axis-x {
+        .esz-axis-x {
             position: absolute;
             top: 0;
             bottom: 0;
@@ -205,7 +205,7 @@
             will-change: left;
         }
 
-        .crt-axis-y {
+        .esz-axis-y {
             position: absolute;
             left: 0;
             right: 0;
@@ -216,7 +216,7 @@
             will-change: top;
         }
 
-        .crt-axis-target {
+        .esz-axis-target {
             position: absolute;
             left: 0;
             top: 0;
@@ -229,11 +229,11 @@
             will-change: left, top;
         }
 
-        .crt-axis-target.is-flashing {
+        .esz-axis-target.is-flashing {
             animation: targetFlash 0.13s steps(1, end) infinite;
         }
 
-        .crt-axis-target.is-settled {
+        .esz-axis-target.is-settled {
             border-color: var(--settled-border);
             box-shadow: 0 0 10px var(--settled-glow);
             background: var(--settled-bg);
@@ -269,7 +269,7 @@
             pointer-events: none;
         }
 
-        .crt-stage.is-cooldown .cooldown-header {
+        .esz-stage.is-cooldown .cooldown-header {
             display: flex;
         }
 
@@ -298,11 +298,11 @@
             pointer-events: auto;
         }
 
-        .crt-stage.is-cooldown.is-owner .cooldown-skip-btn {
+        .esz-stage.is-cooldown.is-owner .cooldown-skip-btn {
             display: inline-block;
         }
 
-        .crt-scroll {
+        .esz-scroll {
             position: relative;
             z-index: 4;
             width: 100%;
@@ -315,7 +315,7 @@
             align-items: center;
         }
 
-        .crt-stage.is-cooldown .crt-scroll {
+        .esz-stage.is-cooldown .esz-scroll {
             padding-top: 96px;
         }
 
@@ -343,12 +343,12 @@
             flex-wrap: wrap;
         }
 
-        .crt-stage.is-cooldown .coord-row {
+        .esz-stage.is-cooldown .coord-row {
             opacity: 0.45;
             pointer-events: none;
         }
 
-        .crt-stage.is-cooldown .coord-error {
+        .esz-stage.is-cooldown .coord-error {
             visibility: hidden;
         }
 
@@ -511,12 +511,12 @@
             box-shadow: 0 0 10px rgba(255, 77, 77, 0.24);
         }
 
-        .crt-stage.is-cooldown .term-btn-danger {
+        .esz-stage.is-cooldown .term-btn-danger {
             border-color: var(--border);
             box-shadow: 0 0 3px var(--bezel-glow);
         }
 
-        .crt-stage.is-cooldown .term-btn-danger:hover {
+        .esz-stage.is-cooldown .term-btn-danger:hover {
             background: var(--btn-hover-bg);
             box-shadow: 0 0 10px var(--glow);
         }
@@ -740,11 +740,11 @@
             box-shadow: 0 0 10px rgba(255, 77, 77, 0.24);
         }
 
-        .crt-stage.is-cooldown .morse-play-btn.is-playing {
+        .esz-stage.is-cooldown .morse-play-btn.is-playing {
             box-shadow: 0 0 3px var(--bezel-glow);
         }
 
-        .crt-stage.is-cooldown .morse-play-btn.is-playing:hover {
+        .esz-stage.is-cooldown .morse-play-btn.is-playing:hover {
             background: var(--btn-hover-bg);
             box-shadow: 0 0 10px var(--glow);
         }
@@ -882,11 +882,11 @@
             box-shadow: 0 0 10px rgba(255, 77, 77, 0.24);
         }
 
-        .crt-stage.is-cooldown .pip-btn.is-playing {
+        .esz-stage.is-cooldown .pip-btn.is-playing {
             box-shadow: 0 0 3px var(--bezel-glow);
         }
 
-        .crt-stage.is-cooldown .pip-btn.is-playing:hover {
+        .esz-stage.is-cooldown .pip-btn.is-playing:hover {
             background: var(--btn-hover-bg);
             box-shadow: 0 0 10px var(--glow);
         }
@@ -1018,10 +1018,10 @@
         }
 
         @media (max-width: 600px) {
-            .crt-scroll {
+            .esz-scroll {
                 padding: 24px 16px;
             }
-            .crt-stage.is-cooldown .crt-scroll {
+            .esz-stage.is-cooldown .esz-scroll {
                 padding-top: 100px;
             }
             .coord-box {
@@ -1042,28 +1042,28 @@
     </style>
 </head>
 <body>
-    <svg class="crt-svg-defs" aria-hidden="true">
+    <svg class="esz-svg-defs" aria-hidden="true">
         <defs>
-            <filter id="crt-barrel" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB" x="0" y="0" width="1200" height="800">
-                <feImage id="crt-disp-img" x="0" y="0" width="1200" height="800" preserveAspectRatio="none" result="disp" />
-                <feDisplacementMap id="crt-disp-map" in="SourceGraphic" in2="disp" scale="160" xChannelSelector="R" yChannelSelector="G" />
+            <filter id="esz-barrel" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB" x="0" y="0" width="1200" height="800">
+                <feImage id="esz-disp-img" x="0" y="0" width="1200" height="800" preserveAspectRatio="none" result="disp" />
+                <feDisplacementMap id="esz-disp-map" in="SourceGraphic" in2="disp" scale="160" xChannelSelector="R" yChannelSelector="G" />
             </filter>
         </defs>
     </svg>
 
-    <div class="crt-stage" id="crt-stage">
-        <div class="crt-bezel" id="crt-bezel">
-            <svg class="crt-expand-svg" id="crt-expand-svg" aria-hidden="true">
+    <div class="esz-stage" id="esz-stage">
+        <div class="esz-bezel" id="esz-bezel">
+            <svg class="esz-expand-svg" id="esz-expand-svg" aria-hidden="true">
                 <line id="exp-line-tl" />
                 <line id="exp-line-tr" />
                 <line id="exp-line-bl" />
                 <line id="exp-line-br" />
             </svg>
 
-            <div class="crt-axis-layer" id="crt-axis-layer" aria-hidden="true">
-                <div class="crt-axis-x" id="crt-axis-x"></div>
-                <div class="crt-axis-y" id="crt-axis-y"></div>
-                <div class="crt-axis-target" id="crt-axis-target"></div>
+            <div class="esz-axis-layer" id="esz-axis-layer" aria-hidden="true">
+                <div class="esz-axis-x" id="esz-axis-x"></div>
+                <div class="esz-axis-y" id="esz-axis-y"></div>
+                <div class="esz-axis-target" id="esz-axis-target"></div>
             </div>
 
             <div class="cooldown-header" id="cooldown-header">
@@ -1071,7 +1071,7 @@
                 <button type="button" id="cooldown-skip-btn" class="term-btn term-btn-sm cooldown-skip-btn">Skip Cooldown</button>
             </div>
 
-            <div class="crt-scroll" id="crt-scroll">
+            <div class="esz-scroll" id="esz-scroll">
                 <div class="terminal-shell" id="terminal-shell">
                     <div class="coord-panel">
                         <div class="coord-row">
@@ -1104,10 +1104,10 @@
                 </div>
             </div>
 
-            <div class="crt-bezel-vignette" aria-hidden="true"></div>
+            <div class="esz-bezel-vignette" aria-hidden="true"></div>
         </div>
 
-        <div class="crt-cooldown-tint" id="crt-cooldown-tint" aria-hidden="true"></div>
+        <div class="esz-cooldown-tint" id="esz-cooldown-tint" aria-hidden="true"></div>
     </div>
 
     <script>
@@ -1661,7 +1661,7 @@
                 ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
                 ctx2d.clearRect(0, 0, w, h);
 
-                const stageEl = document.getElementById('crt-stage') || document.documentElement;
+                const stageEl = document.getElementById('esz-stage') || document.documentElement;
                 const cs = getComputedStyle(stageEl);
                 const dimColor = cs.getPropertyValue('--dim').trim() || '#0c3b18';
                 const brightColor = cs.getPropertyValue('--bright').trim() || '#7dff9e';
@@ -1816,7 +1816,7 @@
             }
 
             function updateBannerFlashZone(greenPct) {
-                const bezel = document.getElementById('crt-bezel');
+                const bezel = document.getElementById('esz-bezel');
                 const banner = document.getElementById('cooldown-banner');
                 if (!bezel || !banner) return;
                 const br = bezel.getBoundingClientRect();
@@ -1828,8 +1828,8 @@
 
             function applyCooldownStep() {
                 if (isEnteringCooldown) return;
-                const stage = document.getElementById('crt-stage');
-                const tint = document.getElementById('crt-cooldown-tint');
+                const stage = document.getElementById('esz-stage');
+                const tint = document.getElementById('esz-cooldown-tint');
                 const banner = document.getElementById('cooldown-banner');
                 if (!stage || !tint) return;
 
@@ -1876,8 +1876,8 @@
                     return;
                 }
 
-                const stage = document.getElementById('crt-stage');
-                const tint = document.getElementById('crt-cooldown-tint');
+                const stage = document.getElementById('esz-stage');
+                const tint = document.getElementById('esz-cooldown-tint');
                 const banner = document.getElementById('cooldown-banner');
 
                 if (withEnterSweep && stage && tint) {
@@ -1951,7 +1951,7 @@
 
             function skipCooldownByOwner() {
                 if (!isOwner) return;
-                const stage = document.getElementById('crt-stage');
+                const stage = document.getElementById('esz-stage');
                 const hadCooldown = stage && stage.classList.contains('is-cooldown');
                 stopCooldownTimers();
                 if (windowResetTimer) {
@@ -1959,7 +1959,7 @@
                     windowResetTimer = null;
                 }
                 clearRateState();
-                const tint = document.getElementById('crt-cooldown-tint');
+                const tint = document.getElementById('esz-cooldown-tint');
                 const banner = document.getElementById('cooldown-banner');
                 if (stage) stage.classList.remove('is-cooldown');
                 if (banner) banner.classList.remove('is-red-zone');
@@ -1969,7 +1969,7 @@
                 if (coordBoxes[0]) focusCoordBox(coordBoxes[0], 0);
             }
 
-            function buildCrtBarrelMap() {
+            function buildeszBarrelMap() {
                 const w = Math.max(320, window.innerWidth);
                 const h = Math.max(240, window.innerHeight);
 
@@ -2027,9 +2027,9 @@
                 ctx.putImageData(imgData, 0, 0);
                 const dataUrl = canvas.toDataURL('image/png');
 
-                const filterEl = document.getElementById('crt-barrel');
-                const feImg = document.getElementById('crt-disp-img');
-                const feMap = document.getElementById('crt-disp-map');
+                const filterEl = document.getElementById('esz-barrel');
+                const feImg = document.getElementById('esz-disp-img');
+                const feMap = document.getElementById('esz-disp-map');
 
                 if (filterEl && feImg && feMap) {
                     filterEl.setAttribute('x', '0');
@@ -2061,14 +2061,14 @@
 
             function hideExpandLines() {
                 stopExpandTracking();
-                const svg = document.getElementById('crt-expand-svg');
+                const svg = document.getElementById('esz-expand-svg');
                 if (svg) svg.classList.remove('is-visible');
             }
 
             function updateExpandLines() {
-                const bezel = document.getElementById('crt-bezel');
-                const svg = document.getElementById('crt-expand-svg');
-                const target = document.getElementById('crt-axis-target');
+                const bezel = document.getElementById('esz-bezel');
+                const svg = document.getElementById('esz-expand-svg');
+                const target = document.getElementById('esz-axis-target');
                 const frame = document.getElementById('signal-frame');
                 if (!bezel || !svg || !target || !frame || !svg.classList.contains('is-visible')) return;
 
@@ -2117,11 +2117,11 @@
                 }
                 stopServoSound();
 
-                const layer = document.getElementById('crt-axis-layer');
-                const xLine = document.getElementById('crt-axis-x');
-                const yLine = document.getElementById('crt-axis-y');
-                const target = document.getElementById('crt-axis-target');
-                const svg = document.getElementById('crt-expand-svg');
+                const layer = document.getElementById('esz-axis-layer');
+                const xLine = document.getElementById('esz-axis-x');
+                const yLine = document.getElementById('esz-axis-y');
+                const target = document.getElementById('esz-axis-target');
+                const svg = document.getElementById('esz-expand-svg');
                 const frame = document.getElementById('signal-frame');
                 if (!layer || !target || !svg || !frame) return;
 
@@ -2201,8 +2201,8 @@
                     axisRaf = null;
                 }
                 hideExpandLines();
-                const layer = document.getElementById('crt-axis-layer');
-                const target = document.getElementById('crt-axis-target');
+                const layer = document.getElementById('esz-axis-layer');
+                const target = document.getElementById('esz-axis-target');
                 if (layer) {
                     layer.classList.remove('is-active');
                     layer.classList.remove('is-locked-only');
@@ -2216,11 +2216,11 @@
             function startAxisAnimation(xStr, yStr) {
                 stopAxisAnimation();
 
-                const bezel = document.getElementById('crt-bezel');
-                const layer = document.getElementById('crt-axis-layer');
-                const xLine = document.getElementById('crt-axis-x');
-                const yLine = document.getElementById('crt-axis-y');
-                const targetBox = document.getElementById('crt-axis-target');
+                const bezel = document.getElementById('esz-bezel');
+                const layer = document.getElementById('esz-axis-layer');
+                const xLine = document.getElementById('esz-axis-x');
+                const yLine = document.getElementById('esz-axis-y');
+                const targetBox = document.getElementById('esz-axis-target');
                 if (!bezel || !layer || !xLine || !yLine || !targetBox) return 0;
 
                 const targetXPct = Math.max(0, Math.min(100, (parseFloat(xStr) / 70) * 100));
@@ -2294,7 +2294,7 @@
             }
 
             function syncOwnerStageClass() {
-                const stage = document.getElementById('crt-stage');
+                const stage = document.getElementById('esz-stage');
                 if (stage) stage.classList.toggle('is-owner', isOwner);
             }
 
@@ -2371,7 +2371,7 @@
                 applyCooldownStep();
             });
             window.addEventListener('resize', () => {
-                buildCrtBarrelMap();
+                buildeszBarrelMap();
                 updateExpandLines();
                 if (isCooldownActive() && !isEnteringCooldown) applyCooldownStep();
             });
@@ -3782,7 +3782,7 @@
                 stopPipPlayback();
                 stopE07Playback(false);
 
-                const scrollEl = document.getElementById('crt-scroll');
+                const scrollEl = document.getElementById('esz-scroll');
                 if (scrollEl) scrollEl.scrollTop = 0;
 
                 const out = document.getElementById('signal-output');
@@ -4298,7 +4298,7 @@
             }
 
             document.addEventListener('DOMContentLoaded', () => {
-                buildCrtBarrelMap();
+                buildeszBarrelMap();
 
                 const bx = initCoordBox('coord-box-x', 'coord-x', true);
                 const by = initCoordBox('coord-box-y', 'coord-y', false);
@@ -4315,7 +4315,7 @@
                     playSovietRelayClunk();
                     skipCooldownByOwner();
                 });
-                document.getElementById('crt-scroll').addEventListener('scroll', updateExpandLines, { passive: true });
+                document.getElementById('esz-scroll').addEventListener('scroll', updateExpandLines, { passive: true });
 
                 verifyAuthWithDatabase();
                 scheduleWindowReset();
