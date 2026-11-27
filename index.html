@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Электронный Селектор Записей</title>
-    <link rel="icon" href="assets/favicon.ico">
+    <link rel="icon" href="favicon.png" type="image/png">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
     <style>
         @font-face {
@@ -39,6 +39,12 @@
             --editor-bg: rgba(1, 10, 4, 0.94);
             --btn-hover-bg: #041408;
             --btn-active-bg: #092610;
+            --nsa-fg: #d6c5a3;
+            --nsa-bright: #f2e5c9;
+            --nsa-muted: #8f8268;
+            --nsa-border: rgba(214, 197, 163, 0.24);
+            --nsa-bg: rgba(9, 8, 6, 0.9);
+            --nsa-glow: rgba(214, 197, 163, 0.18);
         }
 
         .esz-stage.is-cooldown {
@@ -146,6 +152,82 @@
 
         .esz-stage.is-cooldown .esz-cooldown-tint {
             display: block;
+        }
+
+        .nsa-bar {
+            position: fixed;
+            left: 16px;
+            right: 16px;
+            z-index: 12;
+            background: var(--nsa-bg);
+            color: var(--nsa-fg);
+            text-shadow: 0 0 4px var(--nsa-glow);
+            font-size: 10.5px;
+            letter-spacing: 1px;
+            line-height: 1.3;
+            padding: 5px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            user-select: none;
+        }
+
+        .nsa-bar-top {
+            top: 16px;
+            border-bottom: 1px solid var(--nsa-border);
+        }
+
+        .nsa-bar-bottom {
+            bottom: 16px;
+            border-top: 1px solid var(--nsa-border);
+            justify-content: center;
+            text-align: center;
+            color: var(--nsa-muted);
+            font-size: 10px;
+            letter-spacing: 1.4px;
+        }
+
+        .nsa-bar-ref {
+            color: var(--nsa-fg);
+            white-space: nowrap;
+        }
+
+        .nsa-lang-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--nsa-muted);
+            white-space: nowrap;
+        }
+
+        .nsa-lang-btn {
+            background: transparent;
+            border: none;
+            padding: 0 2px;
+            font-size: 10.5px;
+            letter-spacing: 1px;
+            color: var(--nsa-muted);
+            text-shadow: none;
+            cursor: pointer;
+            outline: none;
+            transition: color 0.12s ease, text-shadow 0.12s ease;
+        }
+
+        .nsa-lang-btn.is-barrel-hover {
+            color: var(--nsa-bright);
+            text-shadow: 0 0 5px var(--nsa-glow);
+        }
+
+        .nsa-lang-btn.is-active {
+            color: var(--nsa-bright);
+            text-shadow: 0 0 6px var(--nsa-glow);
+        }
+
+        .nsa-lang-sep {
+            color: var(--nsa-muted);
+            opacity: 0.6;
         }
 
         .esz-bezel-vignette {
@@ -259,7 +341,7 @@
 
         .cooldown-header {
             position: absolute;
-            top: 6%;
+            top: 42px;
             left: 20px;
             right: 20px;
             z-index: 6;
@@ -309,14 +391,14 @@
             height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 36px 28px;
+            padding: 54px 28px 48px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         .esz-stage.is-cooldown .esz-scroll {
-            padding-top: 96px;
+            padding-top: 112px;
         }
 
         .terminal-shell {
@@ -480,14 +562,14 @@
             transition: border-color 0.12s ease, color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
         }
 
-        .term-btn:hover {
+        .term-btn.is-barrel-hover {
             border-color: var(--bright);
             color: var(--bright);
             background: var(--btn-hover-bg);
             box-shadow: 0 0 10px var(--glow);
         }
 
-        .term-btn:active {
+        .term-btn.is-barrel-active {
             background: var(--btn-active-bg);
         }
 
@@ -504,7 +586,7 @@
             box-shadow: 0 0 3px rgba(122, 38, 38, 0.4);
         }
 
-        .term-btn-danger:hover {
+        .term-btn-danger.is-barrel-hover {
             border-color: var(--err);
             color: var(--err);
             background: #140505;
@@ -516,7 +598,7 @@
             box-shadow: 0 0 3px var(--bezel-glow);
         }
 
-        .esz-stage.is-cooldown .term-btn-danger:hover {
+        .esz-stage.is-cooldown .term-btn-danger.is-barrel-hover {
             background: var(--btn-hover-bg);
             box-shadow: 0 0 10px var(--glow);
         }
@@ -735,7 +817,7 @@
             box-shadow: 0 0 3px rgba(255, 77, 77, 0.4);
         }
 
-        .morse-play-btn.is-playing:hover {
+        .morse-play-btn.is-playing.is-barrel-hover {
             background: #140505;
             box-shadow: 0 0 10px rgba(255, 77, 77, 0.24);
         }
@@ -744,7 +826,7 @@
             box-shadow: 0 0 3px var(--bezel-glow);
         }
 
-        .esz-stage.is-cooldown .morse-play-btn.is-playing:hover {
+        .esz-stage.is-cooldown .morse-play-btn.is-playing.is-barrel-hover {
             background: var(--btn-hover-bg);
             box-shadow: 0 0 10px var(--glow);
         }
@@ -877,7 +959,7 @@
             box-shadow: 0 0 3px rgba(255, 77, 77, 0.4);
         }
 
-        .pip-btn.is-playing:hover {
+        .pip-btn.is-playing.is-barrel-hover {
             background: #140505;
             box-shadow: 0 0 10px rgba(255, 77, 77, 0.24);
         }
@@ -886,7 +968,7 @@
             box-shadow: 0 0 3px var(--bezel-glow);
         }
 
-        .esz-stage.is-cooldown .pip-btn.is-playing:hover {
+        .esz-stage.is-cooldown .pip-btn.is-playing.is-barrel-hover {
             background: var(--btn-hover-bg);
             box-shadow: 0 0 10px var(--glow);
         }
@@ -899,6 +981,89 @@
 
         .pip-status.is-active {
             color: var(--bright);
+        }
+
+        .pip-status.is-error {
+            color: var(--err);
+            text-shadow: 0 0 6px rgba(255, 77, 77, 0.3);
+        }
+
+        .radio-tuner-panel {
+            border: 1.5px solid var(--dim);
+            background: var(--morse-bg);
+            padding: 10px 14px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radio-tuner-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            border-bottom: 1px solid var(--dim);
+            padding-bottom: 6px;
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        .radio-tuner-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px 18px;
+        }
+
+        .radio-tuner-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .radio-tuner-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            letter-spacing: 0.8px;
+            color: var(--muted);
+        }
+
+        .radio-tuner-val {
+            color: var(--bright);
+        }
+
+        .radio-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: var(--dim);
+            border: 1px solid var(--border);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .radio-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 16px;
+            background: var(--bright);
+            border: 1.5px solid #000000;
+            box-shadow: 0 0 6px var(--glow);
+            cursor: pointer;
+        }
+
+        .radio-slider::-moz-range-thumb {
+            width: 12px;
+            height: 16px;
+            background: var(--bright);
+            border: 1.5px solid #000000;
+            border-radius: 0;
+            box-shadow: 0 0 6px var(--glow);
+            cursor: pointer;
         }
 
         .media-stack {
@@ -952,7 +1117,7 @@
             text-decoration: underline;
         }
 
-        .media-fallback-link:hover {
+        .media-fallback-link.is-barrel-hover {
             color: var(--bright);
         }
 
@@ -1018,11 +1183,19 @@
         }
 
         @media (max-width: 600px) {
+            .nsa-bar {
+                font-size: 9px;
+                padding: 4px 10px;
+                gap: 6px;
+            }
+            .nsa-lang-btn {
+                font-size: 9px;
+            }
             .esz-scroll {
-                padding: 24px 16px;
+                padding: 60px 16px 46px;
             }
             .esz-stage.is-cooldown .esz-scroll {
-                padding-top: 100px;
+                padding-top: 120px;
             }
             .coord-box {
                 width: 106px;
@@ -1037,6 +1210,9 @@
             .coord-submit-btn {
                 width: 100%;
                 height: auto;
+            }
+            .radio-tuner-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -1108,6 +1284,20 @@
         </div>
 
         <div class="esz-cooldown-tint" id="esz-cooldown-tint" aria-hidden="true"></div>
+
+        <div class="nsa-bar nsa-bar-top">
+            <span class="nsa-bar-ref">NSA/CSS ARCHIVE // REF: IN-85-0041 // ESZ-MIRROR</span>
+            <span class="nsa-lang-wrap">
+                <span>TRANSLATION OVERLAY:</span>
+                <button type="button" id="nsa-lang-ru" class="nsa-lang-btn is-active">[RU-RAW]</button>
+                <span class="nsa-lang-sep">/</span>
+                <button type="button" id="nsa-lang-en" class="nsa-lang-btn">EN-US</button>
+            </span>
+        </div>
+
+        <div class="nsa-bar nsa-bar-bottom">
+            TOP SECRET // UMBRA // NOFORN — RECOVERED SOVIET TELEMETRY
+        </div>
     </div>
 
     <script>
@@ -1123,11 +1313,108 @@
             const COOLDOWN_STEPS = 20;
 
             const WORKER_BASE = "https://thepip.3rr0r-d3v.workers.dev/";
-            const PIP_STREAMS = {
-                day: `${WORKER_BASE}?mode=day`,
-                night: `${WORKER_BASE}?mode=night`
+            const TUNER_STORE_KEY = "esz_radio_tuner_v1";
+            const LANG_STORE_KEY = "esz_lang_overlay_v1";
+
+            const I18N = {
+                ru: {
+                    pageTitle: 'Электронный Селектор Записей',
+                    search: 'ПОИСК',
+                    lockout: 'КОНТРРАЗВЕДЫВАТЕЛЬНАЯ БЛОКИРОВКА',
+                    errInvalid: 'ОШИБКА: НЕВЕРНЫЙ ВВОД',
+                    noSignal: 'СИГНАЛ НЕ ОБНАРУЖЕН',
+                    morsePlay: 'ПУСК',
+                    morseStop: 'СТОП',
+                    standby: 'ОЖИДАНИЕ',
+                    carrierLow: '(НЕСУЩАЯ: НИЗКАЯ)',
+                    carrierHigh: '(НЕСУЩАЯ: ВЫСОКАЯ)',
+                    pipName: 'S30 КАПЛЯ',
+                    buzzerName: 'S28 ЖУЖЖАЛКА',
+                    e07Name: 'E07 ENGLISH MAN',
+                    radioReceive: 'ПРИЁМ',
+                    radioDisconnect: 'ОТБОЙ',
+                    radioConnecting: 'УСТАНОВКА СВЯЗИ...',
+                    tunerTitle: 'НАСТРОЙКА ПРИЁМНИКА',
+                    tunerReset: 'СБРОС',
+                    tunerVol: 'ГРОМКОСТЬ',
+                    tunerBw: 'ПОЛОСА',
+                    tunerNr: 'ШУМОПОД.',
+                    tunerAgc: 'АРУ',
+                    unitHz: 'Гц',
+                    unitDbm: 'дБм',
+                    e07Active: 'СТАТУС: ПЕРЕДАЧА АКТИВНА',
+                    e07Until: 'ДО',
+                    e07NextIn: 'СЛЕДУЮЩИЙ СЕАНС ЧЕРЕЗ',
+                    e07SchedLabel: 'РАСПИСАНИЕ (UTC):',
+                    e07SchedDays: 'ВТ/ПТ 15:00 · ЧТ/СБ 10:00'
+                },
+                en: {
+                    pageTitle: 'Electronic Record Selector (ESZ)',
+                    search: 'SEARCH',
+                    lockout: 'COUNTERINTELLIGENCE LOCKOUT',
+                    errInvalid: 'ERROR: INVALID INPUT',
+                    noSignal: 'NO SIGNAL DETECTED',
+                    morsePlay: 'PLAY',
+                    morseStop: 'STOP',
+                    standby: 'STANDBY',
+                    carrierLow: '(CARRIER: LOW)',
+                    carrierHigh: '(CARRIER: HIGH)',
+                    pipName: 'S30 THE PIP',
+                    buzzerName: 'S28 THE BUZZER',
+                    e07Name: 'E07 ENGLISH MAN',
+                    radioReceive: 'RECEIVE',
+                    radioDisconnect: 'DISCONNECT',
+                    radioConnecting: 'ESTABLISHING LINK...',
+                    tunerTitle: 'RECEIVER TUNING',
+                    tunerReset: 'RESET',
+                    tunerVol: 'VOLUME',
+                    tunerBw: 'BANDWIDTH',
+                    tunerNr: 'NOISE RED.',
+                    tunerAgc: 'AGC',
+                    unitHz: 'Hz',
+                    unitDbm: 'dBm',
+                    e07Active: 'STATUS: TRANSMISSION ACTIVE',
+                    e07Until: 'UNTIL',
+                    e07NextIn: 'NEXT TRANSMISSION IN',
+                    e07SchedLabel: 'SCHEDULE (UTC):',
+                    e07SchedDays: 'TUE/FRI 15:00 · THU/SAT 10:00'
+                }
             };
-            const BUZZER_STREAM = `${WORKER_BASE}?station=s28&action=stream`;
+
+            let currentLang = 'ru';
+            try {
+                const savedLang = localStorage.getItem(LANG_STORE_KEY);
+                if (savedLang === 'en' || savedLang === 'ru') currentLang = savedLang;
+            } catch (e) {}
+
+            function tr(key) {
+                return (I18N[currentLang] && I18N[currentLang][key]) || I18N.ru[key] || key;
+            }
+
+            const FALLBACK_HOSTS_BY_STATION = {
+                s28: [
+                    "http://oh3aa.ddns.net:18073",
+                    "http://kiwi-kuo.aprs.fi:8073",
+                    "http://21612.proxy.kiwisdr.com:8073",
+                    "http://kiwisdr.sk3w.se:8073",
+                    "http://swl-lippi-2.stbach.de"
+                ],
+                pip: [
+                    "http://carinthia.proxy.kiwisdr.com:8073",
+                    "http://swl-lippi-2.stbach.de",
+                    "http://oh3aa.ddns.net:18073",
+                    "http://kiwisdr.sk3w.se:8073"
+                ],
+                e07: [
+                    "http://swl-lippi-2.stbach.de",
+                    "http://ntkiwi.uni-paderborn.de:8073",
+                    "http://carinthia.proxy.kiwisdr.com:8073",
+                    "http://oh3aa.ddns.net:18073"
+                ]
+            };
+
+            const cachedHostsByStation = {};
+            const hostCooldownUntil = new Map();
 
             let sessionUser = null;
             let isOwner = false;
@@ -1153,6 +1440,13 @@
 
             let audioCtx = null;
             let radioAnalyser = null;
+            let radioInputNode = null;
+            let radioHp1 = null;
+            let radioHp2 = null;
+            let radioLp1 = null;
+            let radioLp2 = null;
+            let radioPeak = null;
+            let radioOutGain = null;
             let waveRaf = null;
             let waveData = null;
             let activeServo = null;
@@ -1592,17 +1886,63 @@
                 } catch (e) {}
             }
 
-            function getRadioAnalyser() {
+            function getRadioChain(lowCut, highCut, peakFreq, peakGainDb, outLevel) {
                 const ctx = ensureAudioContext();
                 if (!ctx) return null;
                 if (!radioAnalyser) {
+                    radioHp1 = ctx.createBiquadFilter();
+                    radioHp1.type = 'highpass';
+                    radioHp1.Q.value = 0.707;
+
+                    radioHp2 = ctx.createBiquadFilter();
+                    radioHp2.type = 'highpass';
+                    radioHp2.Q.value = 0.707;
+
+                    radioLp1 = ctx.createBiquadFilter();
+                    radioLp1.type = 'lowpass';
+                    radioLp1.Q.value = 0.707;
+
+                    radioLp2 = ctx.createBiquadFilter();
+                    radioLp2.type = 'lowpass';
+                    radioLp2.Q.value = 0.707;
+
+                    radioPeak = ctx.createBiquadFilter();
+                    radioPeak.type = 'peaking';
+                    radioPeak.Q.value = 2.0;
+
+                    radioOutGain = ctx.createGain();
+                    radioOutGain.gain.value = 1.05;
+
                     radioAnalyser = ctx.createAnalyser();
                     radioAnalyser.fftSize = 1024;
                     radioAnalyser.smoothingTimeConstant = 0.78;
+
+                    radioHp1.connect(radioHp2);
+                    radioHp2.connect(radioLp1);
+                    radioLp1.connect(radioLp2);
+                    radioLp2.connect(radioPeak);
+                    radioPeak.connect(radioOutGain);
+                    radioOutGain.connect(radioAnalyser);
                     radioAnalyser.connect(ctx.destination);
+
+                    radioInputNode = radioHp1;
                     waveData = new Uint8Array(radioAnalyser.fftSize);
                 }
-                return radioAnalyser;
+                const now = ctx.currentTime;
+                const hpFreq = Math.max(80, lowCut || 200);
+                const lpFreq = Math.min(5500, highCut || 2000);
+                if (radioHp1) radioHp1.frequency.setValueAtTime(hpFreq, now);
+                if (radioHp2) radioHp2.frequency.setValueAtTime(hpFreq, now);
+                if (radioLp1) radioLp1.frequency.setValueAtTime(lpFreq, now);
+                if (radioLp2) radioLp2.frequency.setValueAtTime(lpFreq, now);
+                if (radioPeak) {
+                    radioPeak.frequency.setValueAtTime(peakFreq || 640, now);
+                    radioPeak.gain.setValueAtTime(peakGainDb || 0, now);
+                }
+                if (radioOutGain) {
+                    radioOutGain.gain.setValueAtTime(typeof outLevel === 'number' ? outLevel : 1.05, now);
+                }
+                return radioInputNode;
             }
 
             function stopWaveLoop() {
@@ -1612,7 +1952,7 @@
                 }
             }
 
-            function updateSignalMeter(isLive, isConnecting) {
+            function updateSignalMeter(isLive) {
                 const bars = [
                     document.querySelector('.pip-bar-1'),
                     document.querySelector('.pip-bar-2'),
@@ -1707,7 +2047,7 @@
                     ctx2d.stroke();
                     ctx2d.restore();
                 }
-                updateSignalMeter(isLive, isConnecting);
+                updateSignalMeter(isLive);
             }
 
             function startWaveLoop(getStatusFn) {
@@ -2049,6 +2389,248 @@
                 }
             }
 
+            function mapBarrelPoint(clientX, clientY) {
+                const w = Math.max(320, window.innerWidth);
+                const h = Math.max(240, window.innerHeight);
+                const nx = (clientX / w) * 2 - 1;
+                const ny = (clientY / h) * 2 - 1;
+                const r2 = nx * nx + ny * ny;
+                const s = Math.sqrt(r2 + 0.16) - 0.4;
+                const factor = -0.05 + 0.15 * s;
+                const shiftX = (w * 0.5) * nx * factor;
+                const shiftY = (h * 0.5) * ny * factor;
+                return {
+                    x: Math.max(0, Math.min(w - 1, clientX + shiftX)),
+                    y: Math.max(0, Math.min(h - 1, clientY + shiftY))
+                };
+            }
+
+            function updateBarrelSlider(slider, domX) {
+                const rect = slider.getBoundingClientRect();
+                if (rect.width <= 0) return;
+                const min = parseFloat(slider.min);
+                const max = parseFloat(slider.max);
+                const step = parseFloat(slider.step) || 1;
+                const lo = isNaN(min) ? 0 : min;
+                const hi = isNaN(max) ? 100 : max;
+                const pct = Math.max(0, Math.min(1, (domX - rect.left) / rect.width));
+                const raw = lo + pct * (hi - lo);
+                const snapped = Math.max(lo, Math.min(hi, Math.round((raw - lo) / step) * step + lo));
+                const nextStr = String(Number(snapped.toFixed(6)));
+                if (slider.value !== nextStr) {
+                    slider.value = nextStr;
+                    slider.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            }
+
+            function initBarrelPointerMap() {
+                let activeSlider = null;
+                let pendingBtn = null;
+                let hoverEl = null;
+                let suppressNative = false;
+                let suppressResetTimer = null;
+
+                const clearSuppressSoon = () => {
+                    if (suppressResetTimer) clearTimeout(suppressResetTimer);
+                    suppressResetTimer = setTimeout(() => {
+                        suppressResetTimer = null;
+                        suppressNative = false;
+                    }, 0);
+                };
+
+                const setHover = (nextEl) => {
+                    if (hoverEl === nextEl) return;
+                    if (hoverEl) hoverEl.classList.remove('is-barrel-hover');
+                    hoverEl = nextEl;
+                    if (hoverEl) hoverEl.classList.add('is-barrel-hover');
+                };
+
+                const clearPendingBtn = () => {
+                    if (pendingBtn) {
+                        pendingBtn.classList.remove('is-barrel-active');
+                        pendingBtn = null;
+                    }
+                };
+
+                window.addEventListener('pointermove', (e) => {
+                    if (!e.isTrusted) return;
+                    const pt = mapBarrelPoint(e.clientX, e.clientY);
+
+                    if (activeSlider) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        updateBarrelSlider(activeSlider, pt.x);
+                        return;
+                    }
+
+                    const hit = document.elementFromPoint(pt.x, pt.y);
+                    const interactive = hit ? hit.closest('button, a, .term-btn, .nsa-lang-btn, .radio-slider, .coord-box, input, select, textarea') : null;
+                    const hoverTarget = hit ? hit.closest('.term-btn, .nsa-lang-btn, .media-fallback-link') : null;
+                    setHover(hoverTarget);
+
+                    if (!interactive) {
+                        document.body.style.cursor = '';
+                    } else if (interactive.matches('.coord-box, textarea, input[type="text"], input[type="number"]')) {
+                        document.body.style.cursor = 'text';
+                    } else {
+                        document.body.style.cursor = 'pointer';
+                    }
+                }, true);
+
+                window.addEventListener('pointerleave', () => {
+                    setHover(null);
+                    document.body.style.cursor = '';
+                });
+
+                window.addEventListener('pointerdown', (e) => {
+                    if (!e.isTrusted || e.button !== 0) return;
+                    const pt = mapBarrelPoint(e.clientX, e.clientY);
+                    const hit = document.elementFromPoint(pt.x, pt.y);
+                    if (!hit) return;
+
+                    if (hit.closest('video, audio, iframe')) {
+                        return;
+                    }
+
+                    const slider = hit.closest('input[type="range"]');
+                    if (slider && !slider.disabled) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        suppressNative = true;
+                        activeSlider = slider;
+                        updateBarrelSlider(slider, pt.x);
+                        return;
+                    }
+
+                    const cboxEl = hit.closest('.coord-box');
+                    if (cboxEl && !isCooldownActive()) {
+                        const box = coordBoxes.find(b => b.el === cboxEl);
+                        if (box) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            suppressNative = true;
+                            playReedSwitchClick();
+                            const r0 = box.slotEls[0].getBoundingClientRect();
+                            const r1 = box.slotEls[1].getBoundingClientRect();
+                            const r2 = box.slotEls[2].getBoundingClientRect();
+                            const d0 = Math.abs(pt.x - (r0.left + r0.width * 0.5));
+                            const d1 = Math.abs(pt.x - (r1.left + r1.width * 0.5));
+                            const d2 = Math.abs(pt.x - (r2.left + r2.width * 0.5));
+                            const slotIdx = (d0 <= d1 && d0 <= d2) ? 0 : (d1 <= d2 ? 1 : 2);
+                            focusCoordBox(box, slotIdx);
+                            return;
+                        }
+                    }
+
+                    const btn = hit.closest('button');
+                    if (btn) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        suppressNative = true;
+                        if (!btn.disabled) {
+                            clearPendingBtn();
+                            pendingBtn = btn;
+                            pendingBtn.classList.add('is-barrel-active');
+                        }
+                        return;
+                    }
+
+                    const link = hit.closest('a');
+                    if (link) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        suppressNative = true;
+                        link.click();
+                        return;
+                    }
+
+                    const field = hit.closest('input, textarea, select');
+                    if (field && !field.disabled) {
+                        if (e.target !== field) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            suppressNative = true;
+                            field.focus();
+                            if (field.tagName === 'SELECT' && typeof field.showPicker === 'function') {
+                                try { field.showPicker(); } catch (err) {}
+                            }
+                        }
+                        return;
+                    }
+
+                    if (e.target && e.target.closest && e.target.closest('button, a, input, select, textarea, .coord-box')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        suppressNative = true;
+                        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                            document.activeElement.blur();
+                        }
+                    }
+                }, true);
+
+                window.addEventListener('pointerup', (e) => {
+                    if (!e.isTrusted) return;
+
+                    if (activeSlider) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        activeSlider.dispatchEvent(new Event('change', { bubbles: true }));
+                        activeSlider = null;
+                        clearSuppressSoon();
+                        return;
+                    }
+
+                    if (pendingBtn) {
+                        const btn = pendingBtn;
+                        clearPendingBtn();
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const pt = mapBarrelPoint(e.clientX, e.clientY);
+                        const hit = document.elementFromPoint(pt.x, pt.y);
+                        if (hit && hit.closest('button') === btn && !btn.disabled) {
+                            btn.click();
+                        }
+                        clearSuppressSoon();
+                        return;
+                    }
+
+                    if (suppressNative) {
+                        clearSuppressSoon();
+                    }
+                }, true);
+
+                window.addEventListener('pointercancel', () => {
+                    activeSlider = null;
+                    clearPendingBtn();
+                    clearSuppressSoon();
+                }, true);
+
+                window.addEventListener('mousedown', (e) => {
+                    if (e.isTrusted && suppressNative) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                }, true);
+
+                window.addEventListener('click', (e) => {
+                    if (!e.isTrusted) return;
+                    if (suppressNative) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        suppressNative = false;
+                        return;
+                    }
+                    const pt = mapBarrelPoint(e.clientX, e.clientY);
+                    const hit = document.elementFromPoint(pt.x, pt.y);
+                    if (e.target && e.target.closest && e.target.closest('button, a, input, select, textarea, .coord-box')) {
+                        if (!hit || !hit.closest('button, a, input, select, textarea, .coord-box')) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                    }
+                }, true);
+            }
+
             function stopExpandTracking() {
                 if (expandRaf !== null) {
                     cancelAnimationFrame(expandRaf);
@@ -2365,6 +2947,12 @@
                     verifyAuthWithDatabase();
                 } else if (e.key === RATE_KEY) {
                     startCooldownMonitor(false);
+                } else if (e.key === LANG_STORE_KEY) {
+                    const next = e.newValue === 'en' ? 'en' : 'ru';
+                    if (next !== currentLang) {
+                        currentLang = next;
+                        applyLanguageUI();
+                    }
                 }
             });
             window.addEventListener('focus', () => {
@@ -2804,11 +3392,11 @@
                 const btn = document.getElementById('morse-btn-' + prev.id);
                 const status = document.getElementById('morse-carrier-' + prev.id);
                 if (btn) {
-                    btn.textContent = 'ПУСК';
+                    btn.textContent = tr('morsePlay');
                     btn.classList.remove('is-playing');
                 }
                 if (status) {
-                    status.textContent = 'ОЖИДАНИЕ';
+                    status.textContent = tr('standby');
                     status.classList.remove('is-tx');
                 }
             }
@@ -2859,11 +3447,11 @@
                 const btn = document.getElementById('morse-btn-' + packetId);
                 const status = document.getElementById('morse-carrier-' + packetId);
                 if (btn) {
-                    btn.textContent = 'СТОП';
+                    btn.textContent = tr('morseStop');
                     btn.classList.add('is-playing');
                 }
                 if (status) {
-                    status.textContent = '(НЕСУЩАЯ: НИЗКАЯ)';
+                    status.textContent = tr('carrierLow');
                     status.classList.add('is-tx');
                 }
 
@@ -2887,271 +3475,767 @@
                     }
                     const sEl = document.getElementById('morse-carrier-' + packetId);
                     if (sEl) {
-                        sEl.textContent = high ? '(НЕСУЩАЯ: ВЫСОКАЯ)' : '(НЕСУЩАЯ: НИЗКАЯ)';
+                        sEl.textContent = high ? tr('carrierHigh') : tr('carrierLow');
                     }
                 }, 30);
             }
 
-            let pipState = { playing: false, phase: 'standby', audioEl: null, fallbackTimer: null, synthTimer: null, noiseNode: null, noiseGain: null, qsbOsc: null };
+            const IMA_INDEX_TABLE = [-1, -1, -1, -1, 2, 4, 6, 8, -1, -1, -1, -1, 2, 4, 6, 8];
+            const IMA_STEP_TABLE = [
+                7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 21, 23, 25, 28, 31, 34, 37, 41, 45,
+                50, 55, 60, 66, 73, 80, 88, 97, 107, 118, 130, 143, 157, 173, 190, 209, 230,
+                253, 279, 307, 337, 371, 408, 449, 494, 544, 598, 658, 724, 796, 876, 963,
+                1060, 1166, 1282, 1411, 1552, 1707, 1878, 2066, 2272, 2499, 2749, 3024, 3327,
+                3660, 4026, 4428, 4871, 5358, 5894, 6484, 7132, 7845, 8630, 9493, 10442, 11487,
+                12635, 13899, 15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767
+            ];
 
-            function isPipDaytimeUtc(now) {
-                const m = now.getUTCMonth() + 1;
-                const mins = now.getUTCHours() * 60 + now.getUTCMinutes();
-                if (m === 12 || m <= 2) return mins >= 330 && mins < 840;
-                if (m >= 3 && m <= 5) return mins >= 265 && mins < 960;
-                if (m >= 6 && m <= 8) return mins >= 210 && mins < 930;
-                return mins >= 210 && mins < 870;
+            function decodeImaAdpcmToFloat(data, state) {
+                const out = new Float32Array(data.length * 2);
+                let pos = 0;
+                for (let i = 0; i < data.length; i++) {
+                    const byte = data[i];
+                    for (let shift = 0; shift <= 4; shift += 4) {
+                        const code = (byte >> shift) & 0x0f;
+                        const step = IMA_STEP_TABLE[state.index];
+                        let diff = step >> 3;
+                        if (code & 1) diff += step >> 2;
+                        if (code & 2) diff += step >> 1;
+                        if (code & 4) diff += step;
+                        if (code & 8) state.pred -= diff;
+                        else state.pred += diff;
+                        if (state.pred > 32767) state.pred = 32767;
+                        else if (state.pred < -32768) state.pred = -32768;
+                        state.index += IMA_INDEX_TABLE[code];
+                        if (state.index < 0) state.index = 0;
+                        else if (state.index > 88) state.index = 88;
+                        out[pos++] = state.pred / 32768;
+                    }
+                }
+                return out;
             }
 
-            function updatePipUI() {
-                const btn = document.getElementById('pip-toggle-btn');
-                const statusEl = document.getElementById('pip-status');
-                const barEl = document.getElementById('pip-radio-bar');
+            const DEFAULT_TUNER_SETTINGS = {
+                pip: { volume: 135, highCut: 1750, nr: 30, agcThresh: -100 },
+                s28: { volume: 105, highCut: 1900, nr: 20, agcThresh: -95 },
+                e07: { volume: 115, highCut: 2200, nr: 25, agcThresh: -100 }
+            };
+
+            function readAllTunerSettings() {
+                try {
+                    const raw = localStorage.getItem(TUNER_STORE_KEY);
+                    if (!raw) return {};
+                    const parsed = JSON.parse(raw);
+                    return parsed && typeof parsed === 'object' ? parsed : {};
+                } catch (e) {
+                    return {};
+                }
+            }
+
+            function getTunerSettings(station) {
+                const base = DEFAULT_TUNER_SETTINGS[station] || DEFAULT_TUNER_SETTINGS.s28;
+                const saved = readAllTunerSettings()[station];
+                if (!saved || typeof saved !== 'object') return { ...base };
+                return {
+                    volume: typeof saved.volume === 'number' ? Math.max(0, Math.min(200, saved.volume)) : base.volume,
+                    highCut: typeof saved.highCut === 'number' ? Math.max(800, Math.min(5000, saved.highCut)) : base.highCut,
+                    nr: typeof saved.nr === 'number' ? Math.max(0, Math.min(100, saved.nr)) : base.nr,
+                    agcThresh: typeof saved.agcThresh === 'number' ? Math.max(-110, Math.min(-65, saved.agcThresh)) : base.agcThresh
+                };
+            }
+
+            function saveTunerSettings(station, vals) {
+                try {
+                    const all = readAllTunerSettings();
+                    all[station] = {
+                        volume: vals.volume,
+                        highCut: vals.highCut,
+                        nr: vals.nr,
+                        agcThresh: vals.agcThresh
+                    };
+                    localStorage.setItem(TUNER_STORE_KEY, JSON.stringify(all));
+                } catch (e) {}
+            }
+
+            function buildRadioTunerHTML(station) {
+                const t = getTunerSettings(station);
+                return `
+                    <div class="radio-tuner-panel" id="radio-tuner-panel" data-station="${station}">
+                        <div class="radio-tuner-head">
+                            <span id="tuner-title-lbl">${tr('tunerTitle')}</span>
+                            <button type="button" id="tuner-reset-btn" class="term-btn term-btn-sm">${tr('tunerReset')}</button>
+                        </div>
+                        <div class="radio-tuner-grid">
+                            <div class="radio-tuner-item">
+                                <div class="radio-tuner-label">
+                                    <span id="tuner-vol-lbl">${tr('tunerVol')}</span>
+                                    <span class="radio-tuner-val" id="tuner-vol-val">${t.volume}%</span>
+                                </div>
+                                <input type="range" id="tuner-vol" class="radio-slider" min="0" max="200" step="5" value="${t.volume}">
+                            </div>
+                            <div class="radio-tuner-item">
+                                <div class="radio-tuner-label">
+                                    <span id="tuner-bw-lbl">${tr('tunerBw')}</span>
+                                    <span class="radio-tuner-val" id="tuner-bw-val">${t.highCut} ${tr('unitHz')}</span>
+                                </div>
+                                <input type="range" id="tuner-bw" class="radio-slider" min="800" max="5000" step="50" value="${t.highCut}">
+                            </div>
+                            <div class="radio-tuner-item">
+                                <div class="radio-tuner-label">
+                                    <span id="tuner-nr-lbl">${tr('tunerNr')}</span>
+                                    <span class="radio-tuner-val" id="tuner-nr-val">${t.nr}%</span>
+                                </div>
+                                <input type="range" id="tuner-nr" class="radio-slider" min="0" max="100" step="5" value="${t.nr}">
+                            </div>
+                            <div class="radio-tuner-item">
+                                <div class="radio-tuner-label">
+                                    <span id="tuner-agc-lbl">${tr('tunerAgc')}</span>
+                                    <span class="radio-tuner-val" id="tuner-agc-val">${t.agcThresh} ${tr('unitDbm')}</span>
+                                </div>
+                                <input type="range" id="tuner-agc" class="radio-slider" min="-110" max="-65" step="1" value="${t.agcThresh}">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function bindRadioTunerEvents(station, state) {
+                const volEl = document.getElementById('tuner-vol');
+                const bwEl = document.getElementById('tuner-bw');
+                const nrEl = document.getElementById('tuner-nr');
+                const agcEl = document.getElementById('tuner-agc');
+                const volVal = document.getElementById('tuner-vol-val');
+                const bwVal = document.getElementById('tuner-bw-val');
+                const nrVal = document.getElementById('tuner-nr-val');
+                const agcVal = document.getElementById('tuner-agc-val');
+                const resetBtn = document.getElementById('tuner-reset-btn');
+                if (!volEl || !bwEl || !nrEl || !agcEl) return;
+
+                let kiwiSendTimer = null;
+
+                const pushKiwiTuning = () => {
+                    if (kiwiSendTimer) clearTimeout(kiwiSendTimer);
+                    kiwiSendTimer = setTimeout(() => {
+                        kiwiSendTimer = null;
+                        const ws = state.activeWs;
+                        const cfg = state.activeCfg;
+                        if (ws && cfg && ws.readyState === WebSocket.OPEN) {
+                            try {
+                                ws.send(`SET mod=usb low_cut=${cfg.lowCut} high_cut=${cfg.highCut} freq=${Number(cfg.freqKhz).toFixed(2)}`);
+                                ws.send(`SET agc=1 hang=1 thresh=${cfg.agcThresh} slope=6 decay=${cfg.agcDecay} manGain=50`);
+                            } catch (e) {}
+                        }
+                    }, 90);
+                };
+
+                const applyCurrentSliders = (sendToKiwi) => {
+                    const volume = parseInt(volEl.value, 10);
+                    const highCut = parseInt(bwEl.value, 10);
+                    const nr = parseInt(nrEl.value, 10);
+                    const agcThresh = parseInt(agcEl.value, 10);
+
+                    if (volVal) volVal.textContent = `${volume}%`;
+                    if (bwVal) bwVal.textContent = `${highCut} ${tr('unitHz')}`;
+                    if (nrVal) nrVal.textContent = `${nr}%`;
+                    if (agcVal) agcVal.textContent = `${agcThresh} ${tr('unitDbm')}`;
+
+                    saveTunerSettings(station, { volume, highCut, nr, agcThresh });
+
+                    if (state.activeCfg) {
+                        state.activeCfg.outLevel = volume / 100;
+                        state.activeCfg.highCut = highCut;
+                        state.activeCfg.nr = nr;
+                        state.activeCfg.agcThresh = agcThresh;
+                    }
+
+                    if (audioCtx) {
+                        const now = audioCtx.currentTime;
+                        if (radioOutGain) radioOutGain.gain.setValueAtTime(volume / 100, now);
+                        if (radioLp1) radioLp1.frequency.setValueAtTime(highCut, now);
+                        if (radioLp2) radioLp2.frequency.setValueAtTime(highCut, now);
+                    }
+
+                    if (sendToKiwi) pushKiwiTuning();
+                };
+
+                volEl.addEventListener('input', () => applyCurrentSliders(false));
+                nrEl.addEventListener('input', () => applyCurrentSliders(false));
+                bwEl.addEventListener('input', () => applyCurrentSliders(true));
+                agcEl.addEventListener('input', () => applyCurrentSliders(true));
+
+                if (resetBtn) {
+                    resetBtn.addEventListener('click', () => {
+                        playReedSwitchClick();
+                        const def = DEFAULT_TUNER_SETTINGS[station] || DEFAULT_TUNER_SETTINGS.s28;
+                        volEl.value = String(def.volume);
+                        bwEl.value = String(def.highCut);
+                        nrEl.value = String(def.nr);
+                        agcEl.value = String(def.agcThresh);
+                        applyCurrentSliders(true);
+                    });
+                }
+            }
+
+            async function getKiwiHostList(station) {
+                const now = Date.now();
+                const entry = cachedHostsByStation[station];
+                if (entry && now - entry.at < 180000) {
+                    return entry.hosts;
+                }
+                const ac = typeof AbortController !== 'undefined' ? new AbortController() : null;
+                const t = ac ? setTimeout(() => ac.abort(), 2500) : null;
+                try {
+                    const res = await fetch(`${WORKER_BASE}?action=hosts&station=${encodeURIComponent(station)}`, {
+                        signal: ac ? ac.signal : undefined,
+                        cache: 'no-store'
+                    });
+                    if (t) clearTimeout(t);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && Array.isArray(data.hosts) && data.hosts.length > 0) {
+                            cachedHostsByStation[station] = { hosts: data.hosts, at: now };
+                            return data.hosts;
+                        }
+                    }
+                } catch (e) {
+                    if (t) clearTimeout(t);
+                }
+                return FALLBACK_HOSTS_BY_STATION[station] || FALLBACK_HOSTS_BY_STATION.s28;
+            }
+
+            function updateRadioUI(state, btnId, statusId, barId) {
+                const btn = document.getElementById(btnId);
+                const statusEl = document.getElementById(statusId);
+                const barEl = document.getElementById(barId);
 
                 if (btn) {
-                    if (pipState.playing) {
-                        btn.textContent = 'ОТБОЙ';
+                    if (state.playing) {
+                        btn.textContent = tr('radioDisconnect');
                         btn.classList.add('is-playing');
                     } else {
-                        btn.textContent = 'ПРИЁМ';
+                        btn.textContent = tr('radioReceive');
                         btn.classList.remove('is-playing');
                     }
                 }
 
                 if (barEl) {
-                    barEl.classList.toggle('is-connecting', pipState.playing && pipState.phase === 'connecting');
-                    barEl.classList.toggle('is-live', pipState.playing && pipState.phase === 'live');
+                    barEl.classList.toggle('is-connecting', state.playing && state.phase === 'connecting');
+                    barEl.classList.toggle('is-live', state.playing && state.phase === 'live');
                 }
 
                 if (statusEl) {
-                    if (!pipState.playing) {
-                        statusEl.textContent = 'ОЖИДАНИЕ';
-                        statusEl.classList.remove('is-active');
-                    } else if (pipState.phase === 'connecting') {
-                        statusEl.textContent = 'УСТАНОВКА СВЯЗИ...';
+                    statusEl.classList.remove('is-active', 'is-error');
+                    if (state.phase === 'error') {
+                        statusEl.textContent = tr('noSignal');
+                        statusEl.classList.add('is-error');
+                    } else if (!state.playing) {
+                        statusEl.textContent = tr('standby');
+                    } else if (state.phase === 'connecting') {
+                        statusEl.textContent = tr('radioConnecting');
                         statusEl.classList.add('is-active');
                     } else {
-                        statusEl.textContent = 'ПРИЁМ';
+                        statusEl.textContent = tr('radioReceive');
                         statusEl.classList.add('is-active');
                     }
                 }
             }
 
-            function stopPipPlayback() {
-                pipState.playing = false;
-                pipState.phase = 'standby';
+            function cleanupLiveRadio(state, targetPhase, updateUiFn) {
+                state.sessionId = (state.sessionId || 0) + 1;
+                state.playing = false;
+                state.phase = targetPhase || 'standby';
+                state.retryCount = 0;
+                state.activeHost = null;
                 stopWaveLoop();
 
-                if (pipState.fallbackTimer) {
-                    clearTimeout(pipState.fallbackTimer);
-                    pipState.fallbackTimer = null;
+                if (state.keepaliveTimer) {
+                    clearInterval(state.keepaliveTimer);
+                    state.keepaliveTimer = null;
                 }
 
-                if (pipState.audioEl) {
-                    try {
-                        pipState.audioEl.pause();
-                        pipState.audioEl.removeAttribute('src');
-                        pipState.audioEl.load();
-                    } catch (e) {}
-                    pipState.audioEl = null;
+                if (state.stableTimer) {
+                    clearTimeout(state.stableTimer);
+                    state.stableTimer = null;
                 }
 
-                if (pipState.synthTimer) {
-                    clearInterval(pipState.synthTimer);
-                    pipState.synthTimer = null;
+                if (state.reconnectTimer) {
+                    clearTimeout(state.reconnectTimer);
+                    state.reconnectTimer = null;
                 }
 
-                if (pipState.noiseNode) {
-                    try { pipState.noiseNode.stop(); } catch (e) {}
-                    pipState.noiseNode = null;
+                if (state.activeWs) {
+                    try { state.activeWs.close(); } catch (e) {}
+                    state.activeWs = null;
                 }
 
-                if (pipState.qsbOsc) {
-                    try { pipState.qsbOsc.stop(); } catch (e) {}
-                    pipState.qsbOsc = null;
+                if (state.sockets) {
+                    state.sockets.forEach(s => {
+                        try { s.close(); } catch (e) {}
+                    });
+                    state.sockets.clear();
+                    state.sockets = null;
                 }
 
-                pipState.noiseGain = null;
-                updatePipUI();
+                if (state.sources) {
+                    state.sources.forEach(src => {
+                        try { src.stop(); } catch (e) {}
+                    });
+                    state.sources.clear();
+                    state.sources = null;
+                }
+
+                updateUiFn();
                 drawWaveOnce(false, false);
             }
 
-            function startPipSynth() {
-                const ctx = ensureAudioContext();
-                const analyser = getRadioAnalyser();
-                if (!ctx || !analyser || !pipState.playing) return;
+            function handleLiveDrop(state, cfg, droppedHost, updateUiFn, sessionId) {
+                if (state.sessionId !== sessionId || !state.playing) return;
+                const nextSessionId = sessionId + 1;
+                state.sessionId = nextSessionId;
 
-                pipState.phase = 'live';
-                updatePipUI();
-
-                const bufSize = ctx.sampleRate * 3;
-                const noiseBuffer = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-                const output = noiseBuffer.getChannelData(0);
-                let lastOut = 0;
-                for (let i = 0; i < bufSize; i++) {
-                    const white = Math.random() * 2 - 1;
-                    output[i] = (lastOut + 0.04 * white) / 1.04;
-                    lastOut = output[i];
+                if (droppedHost) {
+                    hostCooldownUntil.set(droppedHost, Date.now() + 180000);
                 }
 
-                const noise = ctx.createBufferSource();
-                noise.buffer = noiseBuffer;
-                noise.loop = true;
+                const retries = (state.retryCount || 0) + 1;
+                if (retries > 6) {
+                    playTerminalErrorSound();
+                    cleanupLiveRadio(state, 'error', updateUiFn);
+                    return;
+                }
 
-                const bandpass = ctx.createBiquadFilter();
-                bandpass.type = 'bandpass';
-                bandpass.frequency.value = 1150;
-                bandpass.Q.value = 1.4;
+                if (state.keepaliveTimer) {
+                    clearInterval(state.keepaliveTimer);
+                    state.keepaliveTimer = null;
+                }
+                if (state.stableTimer) {
+                    clearTimeout(state.stableTimer);
+                    state.stableTimer = null;
+                }
+                if (state.reconnectTimer) {
+                    clearTimeout(state.reconnectTimer);
+                    state.reconnectTimer = null;
+                }
+                if (state.activeWs) {
+                    try { state.activeWs.close(); } catch (e) {}
+                    state.activeWs = null;
+                }
+                if (state.sources) {
+                    state.sources.forEach(src => {
+                        try { src.stop(); } catch (e) {}
+                    });
+                    state.sources.clear();
+                }
 
-                const noiseGain = ctx.createGain();
-                noiseGain.gain.value = 0.085;
+                state.activeHost = null;
+                state.retryCount = retries;
+                state.phase = 'connecting';
+                updateUiFn();
 
-                const qsbOsc = ctx.createOscillator();
-                const qsbGain = ctx.createGain();
-                qsbOsc.frequency.value = 0.11;
-                qsbGain.gain.value = 0.025;
-                qsbOsc.connect(qsbGain);
-                qsbGain.connect(noiseGain.gain);
+                state.reconnectTimer = setTimeout(() => {
+                    state.reconnectTimer = null;
+                    if (state.sessionId !== nextSessionId || !state.playing) return;
+                    startLiveRadio(state, cfg, updateUiFn, true, retries);
+                }, 300);
+            }
 
-                noise.connect(bandpass);
-                bandpass.connect(noiseGain);
-                noiseGain.connect(analyser);
+            function connectKiwiWebSocket(host, cfg, state, sessionId, raceState, ctx, destNode, updateUiFn) {
+                return new Promise((resolve, reject) => {
+                    if (state.sessionId !== sessionId || raceState.won) {
+                        reject(new Error('cancelled'));
+                        return;
+                    }
 
-                noise.start();
-                qsbOsc.start();
-
-                pipState.noiseNode = noise;
-                pipState.noiseGain = noiseGain;
-                pipState.qsbOsc = qsbOsc;
-
-                function emitPip() {
-                    if (!pipState.playing) return;
+                    const wsBase = WORKER_BASE.replace(/^http/i, 'ws').replace(/\/+$/, '');
+                    const wsUrl = `${wsBase}/?action=ws&host=${encodeURIComponent(host)}&_t=${Date.now()}`;
+                    let ws;
                     try {
-                        const now = ctx.currentTime;
-                        const osc = ctx.createOscillator();
-                        const gain = ctx.createGain();
-                        osc.type = 'sine';
-                        osc.frequency.setValueAtTime(625, now);
+                        ws = new WebSocket(wsUrl);
+                    } catch (e) {
+                        reject(e);
+                        return;
+                    }
 
-                        gain.gain.setValueAtTime(0, now);
-                        gain.gain.linearRampToValueAtTime(0.14, now + 0.008);
-                        gain.gain.setValueAtTime(0.14, now + 0.185);
-                        gain.gain.linearRampToValueAtTime(0, now + 0.205);
+                    ws.binaryType = 'arraybuffer';
+                    if (state.sockets) state.sockets.add(ws);
 
-                        osc.connect(gain);
-                        gain.connect(analyser);
-                        osc.start(now);
-                        osc.stop(now + 0.215);
+                    const decoder = new TextDecoder();
+                    const adpcmState = { pred: 0, index: 0 };
+                    const nrState = { envFast: 0.02, envFloor: 0.02, curGain: 1.0 };
+                    let sampleRate = 12000;
+                    let tuningSent = false;
+                    let gotAudio = false;
+                    let isWinner = false;
+                    let closed = false;
+                    let dropHandled = false;
+                    let nextPlayTime = 0;
+                    let sampleAcc = new Float32Array(0);
+                    let fallbackTuneTimer = null;
+
+                    const cleanupSelf = () => {
+                        if (closed) return;
+                        closed = true;
+                        clearTimeout(waitTimer);
+                        if (fallbackTuneTimer) {
+                            clearTimeout(fallbackTuneTimer);
+                            fallbackTuneTimer = null;
+                        }
+                        if (state.sockets) state.sockets.delete(ws);
+                        try { ws.close(); } catch (e) {}
+                    };
+
+                    const triggerDrop = () => {
+                        if (dropHandled) return;
+                        dropHandled = true;
+                        cleanupSelf();
+                        if (!isWinner) {
+                            reject(new Error('dropped'));
+                        } else {
+                            handleLiveDrop(state, cfg, host, updateUiFn, sessionId);
+                        }
+                    };
+
+                    const sendTuningOnce = (rate) => {
+                        if (tuningSent || closed || ws.readyState !== WebSocket.OPEN) return;
+                        tuningSent = true;
+                        if (fallbackTuneTimer) {
+                            clearTimeout(fallbackTuneTimer);
+                            fallbackTuneTimer = null;
+                        }
+                        try {
+                            ws.send(`SET AR OK in=${rate} out=44100`);
+                            ws.send('SET ident_user=Web');
+                            ws.send('SET compression=0');
+                            ws.send('SET squelch=0 max=0');
+                            ws.send('SET genattn=0');
+                            ws.send('SET gen=0 mix=-1');
+                            ws.send(`SET mod=usb low_cut=${cfg.lowCut} high_cut=${cfg.highCut} freq=${Number(cfg.freqKhz).toFixed(2)}`);
+                            ws.send(`SET agc=1 hang=1 thresh=${cfg.agcThresh} slope=6 decay=${cfg.agcDecay} manGain=50`);
+                            ws.send('SET keepalive');
+                        } catch (e) {}
+                    };
+
+                    const applyAdaptiveNoiseReduction = (samples) => {
+                        const nrPct = typeof cfg.nr === 'number' ? cfg.nr : 0;
+                        if (nrPct <= 0) return samples;
+                        const nrAmt = Math.max(0, Math.min(1, nrPct / 100));
+                        const knee = 1.05 + nrAmt * 1.35;
+                        const minGain = 1.0 - nrAmt * 0.92;
+                        const out = new Float32Array(samples.length);
+
+                        for (let i = 0; i < samples.length; i++) {
+                            const s = samples[i];
+                            const a = s < 0 ? -s : s;
+                            if (a > nrState.envFast) {
+                                nrState.envFast += (a - nrState.envFast) * 0.02;
+                            } else {
+                                nrState.envFast += (a - nrState.envFast) * 0.0012;
+                            }
+                            if (nrState.envFast < nrState.envFloor) {
+                                nrState.envFloor += (nrState.envFast - nrState.envFloor) * 0.0015;
+                            } else {
+                                nrState.envFloor += (nrState.envFast - nrState.envFloor) * 0.00004;
+                            }
+                            const floorVal = nrState.envFloor > 0.002 ? nrState.envFloor : 0.002;
+                            const ratio = nrState.envFast / floorVal;
+                            let targetGain = 1.0;
+                            if (ratio < knee) {
+                                const t = Math.max(0, Math.min(1, (ratio - 0.85) / Math.max(0.1, knee - 0.85)));
+                                targetGain = minGain + (1.0 - minGain) * t * t;
+                            }
+                            nrState.curGain += (targetGain - nrState.curGain) * 0.008;
+                            out[i] = s * nrState.curGain;
+                        }
+                        return out;
+                    };
+
+                    const scheduleFloats = (floats) => {
+                        if (state.sessionId !== sessionId || !state.playing) return;
+                        if (ctx.state === 'suspended') {
+                            ctx.resume().catch(() => {});
+                        }
+
+                        const processed = applyAdaptiveNoiseReduction(floats);
+                        const merged = new Float32Array(sampleAcc.length + processed.length);
+                        merged.set(sampleAcc, 0);
+                        merged.set(processed, sampleAcc.length);
+                        sampleAcc = merged;
+
+                        const chunkSamples = Math.max(600, Math.round(sampleRate * 0.1));
+                        while (sampleAcc.length >= chunkSamples) {
+                            const piece = sampleAcc.subarray(0, chunkSamples);
+                            const buf = ctx.createBuffer(1, chunkSamples, sampleRate);
+                            buf.getChannelData(0).set(piece);
+                            sampleAcc = sampleAcc.slice(chunkSamples);
+
+                            const src = ctx.createBufferSource();
+                            src.buffer = buf;
+                            src.connect(destNode);
+                            if (state.sources) state.sources.add(src);
+                            src.onended = () => {
+                                if (state.sources) state.sources.delete(src);
+                            };
+
+                            const now = ctx.currentTime;
+                            if (nextPlayTime < now + 0.03 || nextPlayTime > now + 1.4) {
+                                nextPlayTime = now + 0.35;
+                            }
+                            src.start(nextPlayTime);
+                            nextPlayTime += buf.duration;
+                        }
+                    };
+
+                    const waitTimer = setTimeout(() => {
+                        if (!gotAudio) {
+                            cleanupSelf();
+                            reject(new Error('timeout'));
+                        }
+                    }, 4500);
+
+                    ws.addEventListener('open', () => {
+                        if (closed || state.sessionId !== sessionId || raceState.won) {
+                            cleanupSelf();
+                            reject(new Error('cancelled'));
+                            return;
+                        }
+                        try {
+                            ws.send('SET auth t=kiwi p=#');
+                            fallbackTuneTimer = setTimeout(() => {
+                                sendTuningOnce(sampleRate);
+                            }, 700);
+                        } catch (e) {
+                            cleanupSelf();
+                            reject(e);
+                        }
+                    });
+
+                    ws.addEventListener('message', (ev) => {
+                        if (closed || state.sessionId !== sessionId) return;
+
+                        let bytes = null;
+                        let textMsg = null;
+
+                        if (typeof ev.data === 'string') {
+                            textMsg = ev.data;
+                        } else if (ev.data instanceof ArrayBuffer) {
+                            bytes = new Uint8Array(ev.data);
+                            if (bytes.length >= 4 && bytes[0] === 0x4d && bytes[1] === 0x53 && bytes[2] === 0x47) {
+                                textMsg = decoder.decode(bytes.subarray(4));
+                            }
+                        }
+
+                        if (textMsg !== null) {
+                            if (
+                                textMsg.startsWith('load_cfg=') ||
+                                textMsg.startsWith('load_dxcfg=') ||
+                                textMsg.startsWith('load_adm=') ||
+                                textMsg.startsWith('load_dxcomm_cfg=')
+                            ) {
+                                return;
+                            }
+
+                            const isHardReject =
+                                /(?:^|\s)too_busy=[1-9]/.test(textMsg) ||
+                                /(?:^|\s)down=1(?:\s|$)/.test(textMsg) ||
+                                /(?:^|\s)badp=[1-9]/.test(textMsg) ||
+                                /(?:^|\s)inactivity_timeout=[1-9]/.test(textMsg) ||
+                                /(?:^|\s)kick_by_admin(?:\s|=|$)/.test(textMsg) ||
+                                /(?:^|\s)redirect=https?:/i.test(textMsg);
+
+                            if (isHardReject) {
+                                triggerDrop();
+                                return;
+                            }
+
+                            const srMatch = textMsg.match(/(?:sample_rate|audio_rate)=([0-9.]+)/);
+                            if (srMatch) {
+                                const parsed = Math.round(parseFloat(srMatch[1]));
+                                sampleRate = parsed > 16000 ? 20250 : 12000;
+                                sendTuningOnce(sampleRate);
+                            } else if (textMsg.includes('cfg_loaded')) {
+                                sendTuningOnce(sampleRate);
+                            }
+                            return;
+                        }
+
+                        if (bytes && bytes.length > 10 && bytes[0] === 0x53 && bytes[1] === 0x4e && bytes[2] === 0x44) {
+                            if (!gotAudio) {
+                                if (raceState.won || state.sessionId !== sessionId) {
+                                    cleanupSelf();
+                                    reject(new Error('lost race'));
+                                    return;
+                                }
+                                raceState.won = true;
+                                gotAudio = true;
+                                isWinner = true;
+                                clearTimeout(waitTimer);
+                                state.activeWs = ws;
+                                state.activeHost = host;
+                                state.keepaliveTimer = setInterval(() => {
+                                    if (closed || state.sessionId !== sessionId || ws.readyState !== WebSocket.OPEN) {
+                                        if (state.keepaliveTimer) {
+                                            clearInterval(state.keepaliveTimer);
+                                            state.keepaliveTimer = null;
+                                        }
+                                        return;
+                                    }
+                                    try { ws.send('SET keepalive'); } catch (e) {}
+                                }, 4000);
+                                state.stableTimer = setTimeout(() => {
+                                    if (state.sessionId === sessionId && state.playing) {
+                                        state.retryCount = 0;
+                                    }
+                                }, 20000);
+                                state.phase = 'live';
+                                updateUiFn();
+                                resolve(ws);
+                            }
+
+                            const flags = bytes[3];
+                            const isCompressed = (flags & 0x10) !== 0;
+                            const isRestart = (flags & 0x20) !== 0;
+                            const isLittleEndian = (flags & 0x80) !== 0;
+
+                            if (isRestart) {
+                                adpcmState.pred = 0;
+                                adpcmState.index = 0;
+                            }
+
+                            let floats;
+                            if (isCompressed) {
+                                floats = decodeImaAdpcmToFloat(bytes.subarray(10), adpcmState);
+                            } else {
+                                const count = (bytes.length - 10) >> 1;
+                                if (count <= 0) return;
+                                const view = new DataView(bytes.buffer, bytes.byteOffset + 10, count * 2);
+                                floats = new Float32Array(count);
+                                for (let i = 0; i < count; i++) {
+                                    floats[i] = view.getInt16(i * 2, isLittleEndian) / 32768;
+                                }
+                            }
+                            scheduleFloats(floats);
+                        }
+                    });
+
+                    ws.addEventListener('close', triggerDrop);
+                    ws.addEventListener('error', triggerDrop);
+                });
+            }
+
+            async function startLiveRadio(state, cfg, updateUiFn, rotateOffset, retryCarry) {
+                const sessionId = (state.sessionId || 0) + 1;
+                state.sessionId = sessionId;
+                state.activeCfg = cfg;
+                state.playing = true;
+                state.phase = 'connecting';
+                state.activeHost = null;
+                state.retryCount = retryCarry || 0;
+                state.sockets = new Set();
+                state.sources = new Set();
+                updateUiFn();
+                startWaveLoop(() => state);
+
+                const ctx = ensureAudioContext();
+                const destNode = getRadioChain(cfg.lowCut, cfg.highCut, cfg.peakFreq, cfg.peakGainDb, cfg.outLevel);
+                if (!ctx || !destNode) {
+                    playTerminalErrorSound();
+                    cleanupLiveRadio(state, 'error', updateUiFn);
+                    return;
+                }
+
+                const rawHosts = await getKiwiHostList(cfg.station);
+                if (state.sessionId !== sessionId || !state.playing) return;
+
+                const now = Date.now();
+                const freshHosts = rawHosts.filter(h => (hostCooldownUntil.get(h) || 0) <= now);
+                const pool = freshHosts.length > 0 ? freshHosts : rawHosts;
+
+                if (rotateOffset && pool.length > 1) {
+                    state.hostOffset = ((state.hostOffset || 0) + 1) % pool.length;
+                } else if (!rotateOffset) {
+                    state.hostOffset = 0;
+                }
+
+                const off = (state.hostOffset || 0) % Math.max(1, pool.length);
+                const hosts = off > 0 ? [...pool.slice(off), ...pool.slice(0, off)] : pool;
+                const batches = [hosts.slice(0, 4), hosts.slice(4, 8), hosts.slice(8, 12)].filter(b => b.length > 0);
+
+                for (const batch of batches) {
+                    if (state.sessionId !== sessionId || !state.playing) return;
+                    const raceState = { won: false };
+                    try {
+                        const winnerWs = await Promise.any(
+                            batch.map(h => connectKiwiWebSocket(h, cfg, state, sessionId, raceState, ctx, destNode, updateUiFn))
+                        );
+                        if (state.sockets) {
+                            state.sockets.forEach(s => {
+                                if (s !== winnerWs) {
+                                    try { s.close(); } catch (e) {}
+                                }
+                            });
+                        }
+                        return;
                     } catch (e) {}
                 }
 
-                emitPip();
-                pipState.synthTimer = setInterval(emitPip, 1200);
+                if (state.sessionId === sessionId && state.playing) {
+                    playTerminalErrorSound();
+                    cleanupLiveRadio(state, 'error', updateUiFn);
+                }
             }
 
-            function startPipPlayback() {
+            let pipState = { sessionId: 0, hostOffset: 0, retryCount: 0, playing: false, phase: 'standby', freqLabel: '5448 kHz USB', activeCfg: null, activeWs: null, activeHost: null, sockets: null, sources: null, keepaliveTimer: null, stableTimer: null, reconnectTimer: null };
+
+            function isPipDaytimeUtc(now) {
+                const m = now.getUTCMonth() + 1;
+                const mins = now.getUTCHours() * 60 + now.getUTCMinutes();
+                if (m === 11 || m === 12 || m <= 2) return mins >= 330 && mins < 840;
+                if (m === 3 || m === 4) return mins >= 270 && mins < 960;
+                if (m >= 5 && m <= 8) return mins >= 180 && mins < 1050;
+                return mins >= 270 && mins < 990;
+            }
+
+            function updatePipUI() {
+                updateRadioUI(pipState, 'pip-toggle-btn', 'pip-status', 'pip-radio-bar');
+                const titleEl = document.getElementById('pip-title');
+                if (titleEl) titleEl.textContent = `${tr('pipName')} // ${pipState.freqLabel}`;
+            }
+
+            function stopPipPlayback() {
+                cleanupLiveRadio(pipState, 'standby', updatePipUI);
+            }
+
+            function startPipPlayback(rotate) {
                 stopMorsePlayback();
                 stopBuzzerPlayback();
                 stopE07Playback();
                 stopPipPlayback();
 
-                pipState.playing = true;
-                pipState.phase = 'connecting';
-                updatePipUI();
-                startWaveLoop(() => pipState);
-
                 const isDay = isPipDaytimeUtc(new Date());
-                const streamUrl = isDay ? PIP_STREAMS.day : PIP_STREAMS.night;
-                const isHttpsPage = window.location.protocol === 'https:';
-                const isHttpStream = /^http:\/\//i.test(streamUrl);
-
-                if (isHttpsPage && isHttpStream) {
-                    startPipSynth();
-                    return;
-                }
-
-                const ctx = ensureAudioContext();
-                const analyser = getRadioAnalyser();
-
-                const audio = new Audio();
-                audio.crossOrigin = 'anonymous';
-                audio.preload = 'none';
-                audio.src = streamUrl;
-                pipState.audioEl = audio;
-
-                if (ctx && analyser) {
-                    try {
-                        const mediaSrc = ctx.createMediaElementSource(audio);
-                        mediaSrc.connect(analyser);
-                    } catch (e) {}
-                }
-
-                let fellBack = false;
-                pipState.fallbackTimer = setTimeout(() => {
-                    pipState.fallbackTimer = null;
-                    if (pipState.playing && pipState.audioEl === audio && audio.readyState < 2 && !fellBack) {
-                        fellBack = true;
-                        try {
-                            audio.pause();
-                            audio.removeAttribute('src');
-                        } catch (e) {}
-                        pipState.audioEl = null;
-                        startPipSynth();
-                    }
-                }, 1800);
-
-                audio.addEventListener('playing', () => {
-                    if (pipState.fallbackTimer) {
-                        clearTimeout(pipState.fallbackTimer);
-                        pipState.fallbackTimer = null;
-                    }
-                    if (pipState.playing && pipState.audioEl === audio) {
-                        pipState.phase = 'live';
-                        updatePipUI();
-                    }
-                });
-
-                audio.addEventListener('waiting', () => {
-                    if (pipState.playing && pipState.audioEl === audio) {
-                        pipState.phase = 'connecting';
-                        updatePipUI();
-                    }
-                });
-
-                audio.addEventListener('error', () => {
-                    if (pipState.fallbackTimer) {
-                        clearTimeout(pipState.fallbackTimer);
-                        pipState.fallbackTimer = null;
-                    }
-                    if (pipState.playing && pipState.audioEl === audio && !fellBack) {
-                        fellBack = true;
-                        pipState.audioEl = null;
-                        startPipSynth();
-                    }
-                });
-
-                const playPromise = audio.play();
-                if (playPromise && typeof playPromise.catch === 'function') {
-                    playPromise.catch(() => {
-                        if (pipState.fallbackTimer) {
-                            clearTimeout(pipState.fallbackTimer);
-                            pipState.fallbackTimer = null;
-                        }
-                        if (pipState.playing && pipState.audioEl === audio && !fellBack) {
-                            fellBack = true;
-                            pipState.audioEl = null;
-                            startPipSynth();
-                        }
-                    });
-                }
+                pipState.freqLabel = isDay ? '5448 kHz USB' : '3756 kHz USB';
+                const tuner = getTunerSettings('pip');
+                const cfg = {
+                    station: 'pip',
+                    freqKhz: isDay ? 5448 : 3756,
+                    lowCut: 250,
+                    highCut: tuner.highCut,
+                    nr: tuner.nr,
+                    agcThresh: tuner.agcThresh,
+                    agcDecay: 1500,
+                    peakFreq: 635,
+                    peakGainDb: 5,
+                    outLevel: tuner.volume / 100
+                };
+                startLiveRadio(pipState, cfg, updatePipUI, !!rotate, 0);
             }
 
             function togglePipPlayback() {
                 playSovietRelayClunk();
                 if (pipState.playing) {
+                    if (pipState.activeHost) hostCooldownUntil.set(pipState.activeHost, Date.now() + 60000);
                     stopPipPlayback();
                 } else {
-                    startPipPlayback();
+                    startPipPlayback(true);
                 }
             }
 
@@ -3161,7 +4245,7 @@
                 stopE07Playback();
                 stopPipPlayback();
 
-                const freqLabel = isPipDaytimeUtc(new Date()) ? '5448 kHz USB' : '3756 kHz USB';
+                pipState.freqLabel = isPipDaytimeUtc(new Date()) ? '5448 kHz USB' : '3756 kHz USB';
                 const out = document.getElementById('signal-output');
                 out.classList.add('is-visible');
                 out.innerHTML = `
@@ -3169,7 +4253,7 @@
                         <div class="packet-card">
                             <div class="pip-box">
                                 <div class="pip-radio-bar is-connecting" id="pip-radio-bar">
-                                    <span>S30 КАПЛЯ // ${freqLabel}</span>
+                                    <span id="pip-title">${tr('pipName')} // ${pipState.freqLabel}</span>
                                     <div class="pip-bars" aria-hidden="true">
                                         <span class="pip-bar pip-bar-1"></span>
                                         <span class="pip-bar pip-bar-2"></span>
@@ -3181,9 +4265,10 @@
                                     <canvas id="radio-wave-canvas" class="radio-wave-canvas"></canvas>
                                 </div>
                                 <div class="pip-controls">
-                                    <button type="button" id="pip-toggle-btn" class="term-btn pip-btn">ОТБОЙ</button>
-                                    <span id="pip-status" class="pip-status is-active">УСТАНОВКА СВЯЗИ...</span>
+                                    <button type="button" id="pip-toggle-btn" class="term-btn pip-btn">${tr('radioDisconnect')}</button>
+                                    <span id="pip-status" class="pip-status is-active">${tr('radioConnecting')}</span>
                                 </div>
+                                ${buildRadioTunerHTML('pip')}
                             </div>
                         </div>
                     </div>
@@ -3191,309 +4276,53 @@
 
                 const btn = document.getElementById('pip-toggle-btn');
                 if (btn) btn.addEventListener('click', togglePipPlayback);
+                bindRadioTunerEvents('pip', pipState);
 
                 activateSettledExpand(true);
-                startPipPlayback();
+                startPipPlayback(false);
             }
 
-            let buzzerState = {
-                playing: false,
-                phase: 'standby',
-                audioEl: null,
-                fallbackTimer: null,
-                synthTimer: null,
-                noiseNode: null,
-                noiseGain: null,
-                qsbOsc: null,
-                activeBuzz: null
-            };
+            let buzzerState = { sessionId: 0, hostOffset: 0, retryCount: 0, playing: false, phase: 'standby', activeCfg: null, activeWs: null, activeHost: null, sockets: null, sources: null, keepaliveTimer: null, stableTimer: null, reconnectTimer: null };
 
             function updateBuzzerUI() {
-                const btn = document.getElementById('buzzer-toggle-btn');
-                const statusEl = document.getElementById('buzzer-status');
-                const barEl = document.getElementById('buzzer-radio-bar');
-
-                if (btn) {
-                    if (buzzerState.playing) {
-                        btn.textContent = 'ОТБОЙ';
-                        btn.classList.add('is-playing');
-                    } else {
-                        btn.textContent = 'ПРИЁМ';
-                        btn.classList.remove('is-playing');
-                    }
-                }
-
-                if (barEl) {
-                    barEl.classList.toggle('is-connecting', buzzerState.playing && buzzerState.phase === 'connecting');
-                    barEl.classList.toggle('is-live', buzzerState.playing && buzzerState.phase === 'live');
-                }
-
-                if (statusEl) {
-                    if (!buzzerState.playing) {
-                        statusEl.textContent = 'ОЖИДАНИЕ';
-                        statusEl.classList.remove('is-active');
-                    } else if (buzzerState.phase === 'connecting') {
-                        statusEl.textContent = 'УСТАНОВКА СВЯЗИ...';
-                        statusEl.classList.add('is-active');
-                    } else {
-                        statusEl.textContent = 'ПРИЁМ';
-                        statusEl.classList.add('is-active');
-                    }
-                }
+                updateRadioUI(buzzerState, 'buzzer-toggle-btn', 'buzzer-status', 'buzzer-radio-bar');
+                const titleEl = document.getElementById('buzzer-title');
+                if (titleEl) titleEl.textContent = `${tr('buzzerName')} // 4625 kHz USB`;
             }
 
             function stopBuzzerPlayback() {
-                buzzerState.playing = false;
-                buzzerState.phase = 'standby';
-                stopWaveLoop();
-
-                if (buzzerState.fallbackTimer) {
-                    clearTimeout(buzzerState.fallbackTimer);
-                    buzzerState.fallbackTimer = null;
-                }
-
-                if (buzzerState.audioEl) {
-                    try {
-                        buzzerState.audioEl.pause();
-                        buzzerState.audioEl.removeAttribute('src');
-                        buzzerState.audioEl.load();
-                    } catch (e) {}
-                    buzzerState.audioEl = null;
-                }
-
-                if (buzzerState.synthTimer) {
-                    clearInterval(buzzerState.synthTimer);
-                    buzzerState.synthTimer = null;
-                }
-
-                if (buzzerState.activeBuzz) {
-                    const b = buzzerState.activeBuzz;
-                    buzzerState.activeBuzz = null;
-                    try {
-                        if (audioCtx && b.gain) {
-                            const now = audioCtx.currentTime;
-                            b.gain.gain.cancelScheduledValues(now);
-                            b.gain.gain.setValueAtTime(b.gain.gain.value, now);
-                            b.gain.gain.linearRampToValueAtTime(0, now + 0.015);
-                        }
-                        if (b.osc1) b.osc1.stop(audioCtx ? audioCtx.currentTime + 0.02 : 0);
-                        if (b.osc2) b.osc2.stop(audioCtx ? audioCtx.currentTime + 0.02 : 0);
-                    } catch (e) {}
-                }
-
-                if (buzzerState.noiseNode) {
-                    try { buzzerState.noiseNode.stop(); } catch (e) {}
-                    buzzerState.noiseNode = null;
-                }
-
-                if (buzzerState.qsbOsc) {
-                    try { buzzerState.qsbOsc.stop(); } catch (e) {}
-                    buzzerState.qsbOsc = null;
-                }
-
-                buzzerState.noiseGain = null;
-                updateBuzzerUI();
-                drawWaveOnce(false, false);
+                cleanupLiveRadio(buzzerState, 'standby', updateBuzzerUI);
             }
 
-            function startBuzzerSynth() {
-                const ctx = ensureAudioContext();
-                const analyser = getRadioAnalyser();
-                if (!ctx || !analyser || !buzzerState.playing) return;
-
-                buzzerState.phase = 'live';
-                updateBuzzerUI();
-
-                const bufSize = ctx.sampleRate * 3;
-                const noiseBuffer = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-                const output = noiseBuffer.getChannelData(0);
-                let lastOut = 0;
-                for (let i = 0; i < bufSize; i++) {
-                    const white = Math.random() * 2 - 1;
-                    output[i] = (lastOut + 0.045 * white) / 1.045;
-                    lastOut = output[i];
-                }
-
-                const noise = ctx.createBufferSource();
-                noise.buffer = noiseBuffer;
-                noise.loop = true;
-
-                const bandpass = ctx.createBiquadFilter();
-                bandpass.type = 'bandpass';
-                bandpass.frequency.value = 1100;
-                bandpass.Q.value = 1.25;
-
-                const noiseGain = ctx.createGain();
-                noiseGain.gain.value = 0.085;
-
-                const qsbOsc = ctx.createOscillator();
-                const qsbGain = ctx.createGain();
-                qsbOsc.frequency.value = 0.09;
-                qsbGain.gain.value = 0.028;
-                qsbOsc.connect(qsbGain);
-                qsbGain.connect(noiseGain.gain);
-
-                noise.connect(bandpass);
-                bandpass.connect(noiseGain);
-                noiseGain.connect(analyser);
-
-                noise.start();
-                qsbOsc.start();
-
-                buzzerState.noiseNode = noise;
-                buzzerState.noiseGain = noiseGain;
-                buzzerState.qsbOsc = qsbOsc;
-
-                function emitBuzz() {
-                    if (!buzzerState.playing) return;
-                    try {
-                        const now = ctx.currentTime;
-                        const osc1 = ctx.createOscillator();
-                        const osc2 = ctx.createOscillator();
-                        const g1 = ctx.createGain();
-                        const g2 = ctx.createGain();
-                        const filter = ctx.createBiquadFilter();
-                        const master = ctx.createGain();
-
-                        osc1.type = 'sawtooth';
-                        osc1.frequency.setValueAtTime(107, now);
-                        g1.gain.setValueAtTime(0.7, now);
-
-                        osc2.type = 'square';
-                        osc2.frequency.setValueAtTime(107.8, now);
-                        g2.gain.setValueAtTime(0.3, now);
-
-                        filter.type = 'bandpass';
-                        filter.frequency.setValueAtTime(760, now);
-                        filter.Q.setValueAtTime(1.15, now);
-
-                        master.gain.setValueAtTime(0, now);
-                        master.gain.linearRampToValueAtTime(0.135, now + 0.022);
-                        master.gain.setValueAtTime(0.135, now + 1.05);
-                        master.gain.linearRampToValueAtTime(0, now + 1.10);
-
-                        osc1.connect(g1);
-                        osc2.connect(g2);
-                        g1.connect(filter);
-                        g2.connect(filter);
-                        filter.connect(master);
-                        master.connect(analyser);
-
-                        osc1.start(now);
-                        osc2.start(now);
-                        osc1.stop(now + 1.12);
-                        osc2.stop(now + 1.12);
-
-                        buzzerState.activeBuzz = { osc1, osc2, gain: master };
-                    } catch (e) {}
-                }
-
-                emitBuzz();
-                buzzerState.synthTimer = setInterval(emitBuzz, 2400);
-            }
-
-            function startBuzzerPlayback() {
+            function startBuzzerPlayback(rotate) {
                 stopMorsePlayback();
                 stopPipPlayback();
                 stopE07Playback();
                 stopBuzzerPlayback();
 
-                buzzerState.playing = true;
-                buzzerState.phase = 'connecting';
-                updateBuzzerUI();
-                startWaveLoop(() => buzzerState);
-
-                const streamUrl = BUZZER_STREAM;
-                const isHttpsPage = window.location.protocol === 'https:';
-                const isHttpStream = /^http:\/\//i.test(streamUrl);
-
-                if (isHttpsPage && isHttpStream) {
-                    startBuzzerSynth();
-                    return;
-                }
-
-                const ctx = ensureAudioContext();
-                const analyser = getRadioAnalyser();
-
-                const audio = new Audio();
-                audio.crossOrigin = 'anonymous';
-                audio.preload = 'none';
-                audio.src = streamUrl;
-                buzzerState.audioEl = audio;
-
-                if (ctx && analyser) {
-                    try {
-                        const mediaSrc = ctx.createMediaElementSource(audio);
-                        mediaSrc.connect(analyser);
-                    } catch (e) {}
-                }
-
-                let fellBack = false;
-                buzzerState.fallbackTimer = setTimeout(() => {
-                    buzzerState.fallbackTimer = null;
-                    if (buzzerState.playing && buzzerState.audioEl === audio && audio.readyState < 2 && !fellBack) {
-                        fellBack = true;
-                        try {
-                            audio.pause();
-                            audio.removeAttribute('src');
-                        } catch (e) {}
-                        buzzerState.audioEl = null;
-                        startBuzzerSynth();
-                    }
-                }, 1800);
-
-                audio.addEventListener('playing', () => {
-                    if (buzzerState.fallbackTimer) {
-                        clearTimeout(buzzerState.fallbackTimer);
-                        buzzerState.fallbackTimer = null;
-                    }
-                    if (buzzerState.playing && buzzerState.audioEl === audio) {
-                        buzzerState.phase = 'live';
-                        updateBuzzerUI();
-                    }
-                });
-
-                audio.addEventListener('waiting', () => {
-                    if (buzzerState.playing && buzzerState.audioEl === audio) {
-                        buzzerState.phase = 'connecting';
-                        updateBuzzerUI();
-                    }
-                });
-
-                audio.addEventListener('error', () => {
-                    if (buzzerState.fallbackTimer) {
-                        clearTimeout(buzzerState.fallbackTimer);
-                        buzzerState.fallbackTimer = null;
-                    }
-                    if (buzzerState.playing && buzzerState.audioEl === audio && !fellBack) {
-                        fellBack = true;
-                        buzzerState.audioEl = null;
-                        startBuzzerSynth();
-                    }
-                });
-
-                const playPromise = audio.play();
-                if (playPromise && typeof playPromise.catch === 'function') {
-                    playPromise.catch(() => {
-                        if (buzzerState.fallbackTimer) {
-                            clearTimeout(buzzerState.fallbackTimer);
-                            buzzerState.fallbackTimer = null;
-                        }
-                        if (buzzerState.playing && buzzerState.audioEl === audio && !fellBack) {
-                            fellBack = true;
-                            buzzerState.audioEl = null;
-                            startBuzzerSynth();
-                        }
-                    });
-                }
+                const tuner = getTunerSettings('s28');
+                const cfg = {
+                    station: 's28',
+                    freqKhz: 4625,
+                    lowCut: 100,
+                    highCut: tuner.highCut,
+                    nr: tuner.nr,
+                    agcThresh: tuner.agcThresh,
+                    agcDecay: 2000,
+                    peakFreq: 420,
+                    peakGainDb: 0,
+                    outLevel: tuner.volume / 100
+                };
+                startLiveRadio(buzzerState, cfg, updateBuzzerUI, !!rotate, 0);
             }
 
             function toggleBuzzerPlayback() {
                 playSovietRelayClunk();
                 if (buzzerState.playing) {
+                    if (buzzerState.activeHost) hostCooldownUntil.set(buzzerState.activeHost, Date.now() + 60000);
                     stopBuzzerPlayback();
                 } else {
-                    startBuzzerPlayback();
+                    startBuzzerPlayback(true);
                 }
             }
 
@@ -3510,7 +4339,7 @@
                         <div class="packet-card">
                             <div class="pip-box">
                                 <div class="pip-radio-bar is-connecting" id="buzzer-radio-bar">
-                                    <span>S28 ЖУЖЖАЛКА // 4625 kHz USB</span>
+                                    <span id="buzzer-title">${tr('buzzerName')} // 4625 kHz USB</span>
                                     <div class="pip-bars" aria-hidden="true">
                                         <span class="pip-bar pip-bar-1"></span>
                                         <span class="pip-bar pip-bar-2"></span>
@@ -3522,9 +4351,10 @@
                                     <canvas id="radio-wave-canvas" class="radio-wave-canvas"></canvas>
                                 </div>
                                 <div class="pip-controls">
-                                    <button type="button" id="buzzer-toggle-btn" class="term-btn pip-btn">ОТБОЙ</button>
-                                    <span id="buzzer-status" class="pip-status is-active">УСТАНОВКА СВЯЗИ...</span>
+                                    <button type="button" id="buzzer-toggle-btn" class="term-btn pip-btn">${tr('radioDisconnect')}</button>
+                                    <span id="buzzer-status" class="pip-status is-active">${tr('radioConnecting')}</span>
                                 </div>
+                                ${buildRadioTunerHTML('s28')}
                             </div>
                         </div>
                     </div>
@@ -3532,9 +4362,10 @@
 
                 const btn = document.getElementById('buzzer-toggle-btn');
                 if (btn) btn.addEventListener('click', toggleBuzzerPlayback);
+                bindRadioTunerEvents('s28', buzzerState);
 
                 activateSettledExpand(true);
-                startBuzzerPlayback();
+                startBuzzerPlayback(false);
             }
 
             const E07_SLOT_DURATION_MS = 15 * 60 * 1000;
@@ -3554,16 +4385,23 @@
             ];
 
             let e07State = {
+                sessionId: 0,
+                hostOffset: 0,
+                retryCount: 0,
                 schedule: null,
+                targetMs: null,
+                activeEndStr: null,
                 countdownTimer: null,
                 playing: false,
                 phase: 'standby',
-                audioEl: null,
-                fallbackTimer: null,
-                synthTimer: null,
-                noiseNode: null,
-                toneOsc: null,
-                qsbOsc: null
+                activeCfg: null,
+                activeWs: null,
+                activeHost: null,
+                sockets: null,
+                sources: null,
+                keepaliveTimer: null,
+                stableTimer: null,
+                reconnectTimer: null
             };
 
             function computeLocalE07Schedule(nowMs) {
@@ -3648,257 +4486,53 @@
             }
 
             function updateE07UI() {
-                const btn = document.getElementById('e07-toggle-btn');
-                const statusEl = document.getElementById('e07-status');
-                const barEl = document.getElementById('e07-radio-bar');
-
-                if (btn) {
-                    if (e07State.playing) {
-                        btn.textContent = 'ОТБОЙ';
-                        btn.classList.add('is-playing');
-                    } else {
-                        btn.textContent = 'ПРИЁМ';
-                        btn.classList.remove('is-playing');
-                    }
-                }
-
-                if (barEl) {
-                    barEl.classList.toggle('is-connecting', e07State.playing && e07State.phase === 'connecting');
-                    barEl.classList.toggle('is-live', e07State.playing && e07State.phase === 'live');
-                }
-
-                if (statusEl) {
-                    if (!e07State.playing) {
-                        statusEl.textContent = 'ОЖИДАНИЕ';
-                        statusEl.classList.remove('is-active');
-                    } else if (e07State.phase === 'connecting') {
-                        statusEl.textContent = 'УСТАНОВКА СВЯЗИ...';
-                        statusEl.classList.add('is-active');
-                    } else {
-                        statusEl.textContent = 'ПРИЁМ';
-                        statusEl.classList.add('is-active');
-                    }
-                }
+                updateRadioUI(e07State, 'e07-toggle-btn', 'e07-status', 'e07-radio-bar');
+                const actLbl = document.getElementById('e07-active-lbl');
+                const untilLbl = document.getElementById('e07-until-lbl');
+                const cdEl = document.getElementById('e07-countdown-text');
+                const schedLbl = document.getElementById('e07-sched-lbl');
+                const schedDays = document.getElementById('e07-sched-days');
+                if (actLbl) actLbl.textContent = tr('e07Active');
+                if (untilLbl && e07State.activeEndStr) untilLbl.textContent = `${tr('e07Until')} ${e07State.activeEndStr}`;
+                if (cdEl && e07State.targetMs) cdEl.textContent = `${tr('e07NextIn')} ${formatCountdownHHMM(e07State.targetMs - Date.now())}`;
+                if (schedLbl) schedLbl.textContent = tr('e07SchedLabel');
+                if (schedDays) schedDays.textContent = tr('e07SchedDays');
             }
 
             function stopE07Playback(keepTimer) {
                 if (!keepTimer) stopE07Countdown();
-                e07State.playing = false;
-                e07State.phase = 'standby';
-                stopWaveLoop();
-
-                if (e07State.fallbackTimer) {
-                    clearTimeout(e07State.fallbackTimer);
-                    e07State.fallbackTimer = null;
-                }
-
-                if (e07State.audioEl) {
-                    try {
-                        e07State.audioEl.pause();
-                        e07State.audioEl.removeAttribute('src');
-                        e07State.audioEl.load();
-                    } catch (e) {}
-                    e07State.audioEl = null;
-                }
-
-                if (e07State.synthTimer) {
-                    clearInterval(e07State.synthTimer);
-                    e07State.synthTimer = null;
-                }
-
-                if (e07State.noiseNode) {
-                    try { e07State.noiseNode.stop(); } catch (e) {}
-                    e07State.noiseNode = null;
-                }
-
-                if (e07State.toneOsc) {
-                    try { e07State.toneOsc.stop(); } catch (e) {}
-                    e07State.toneOsc = null;
-                }
-
-                if (e07State.qsbOsc) {
-                    try { e07State.qsbOsc.stop(); } catch (e) {}
-                    e07State.qsbOsc = null;
-                }
-
-                updateE07UI();
-                drawWaveOnce(false, false);
+                cleanupLiveRadio(e07State, 'standby', updateE07UI);
             }
 
-            function startE07Synth() {
-                const ctx = ensureAudioContext();
-                const analyser = getRadioAnalyser();
-                if (!ctx || !analyser || !e07State.playing) return;
-
-                e07State.phase = 'live';
-                updateE07UI();
-
-                const bufSize = ctx.sampleRate * 3;
-                const noiseBuffer = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-                const output = noiseBuffer.getChannelData(0);
-                let lastOut = 0;
-                for (let i = 0; i < bufSize; i++) {
-                    const white = Math.random() * 2 - 1;
-                    output[i] = (lastOut + 0.055 * white) / 1.055;
-                    lastOut = output[i];
-                }
-
-                const noise = ctx.createBufferSource();
-                noise.buffer = noiseBuffer;
-                noise.loop = true;
-
-                const bandpass = ctx.createBiquadFilter();
-                bandpass.type = 'bandpass';
-                bandpass.frequency.value = 1350;
-                bandpass.Q.value = 1.1;
-
-                const noiseGain = ctx.createGain();
-                noiseGain.gain.value = 0.095;
-
-                const qsbOsc = ctx.createOscillator();
-                const qsbGain = ctx.createGain();
-                qsbOsc.frequency.value = 0.14;
-                qsbGain.gain.value = 0.032;
-                qsbOsc.connect(qsbGain);
-                qsbGain.connect(noiseGain.gain);
-
-                noise.connect(bandpass);
-                bandpass.connect(noiseGain);
-                noiseGain.connect(analyser);
-
-                const toneOsc = ctx.createOscillator();
-                const toneGain = ctx.createGain();
-                toneOsc.type = 'sine';
-                toneOsc.frequency.value = 1000;
-                toneGain.gain.value = 0.025;
-                toneOsc.connect(toneGain);
-                toneGain.connect(analyser);
-
-                noise.start();
-                toneOsc.start();
-                qsbOsc.start();
-
-                e07State.noiseNode = noise;
-                e07State.toneOsc = toneOsc;
-                e07State.qsbOsc = qsbOsc;
-
-                function emitMarkerBurst() {
-                    if (!e07State.playing) return;
-                    try {
-                        const now = ctx.currentTime;
-                        const osc = ctx.createOscillator();
-                        const g = ctx.createGain();
-                        osc.type = 'sine';
-                        osc.frequency.setValueAtTime(1000, now);
-                        g.gain.setValueAtTime(0, now);
-                        g.gain.linearRampToValueAtTime(0.075, now + 0.02);
-                        g.gain.setValueAtTime(0.075, now + 0.34);
-                        g.gain.linearRampToValueAtTime(0, now + 0.38);
-                        osc.connect(g);
-                        g.connect(analyser);
-                        osc.start(now);
-                        osc.stop(now + 0.4);
-                    } catch (e) {}
-                }
-
-                emitMarkerBurst();
-                e07State.synthTimer = setInterval(emitMarkerBurst, 2200);
-            }
-
-            function startE07Playback(freqKhz) {
+            function startE07Playback(freqKhz, rotate) {
                 stopMorsePlayback();
                 stopPipPlayback();
                 stopBuzzerPlayback();
                 stopE07Playback(true);
 
-                e07State.playing = true;
-                e07State.phase = 'connecting';
-                updateE07UI();
-                startWaveLoop(() => e07State);
-
-                const streamUrl = `${WORKER_BASE}?station=e07&action=stream&freq=${encodeURIComponent(freqKhz || 17461)}`;
-                const ctx = ensureAudioContext();
-                const analyser = getRadioAnalyser();
-
-                const audio = new Audio();
-                audio.crossOrigin = 'anonymous';
-                audio.preload = 'none';
-                audio.src = streamUrl;
-                e07State.audioEl = audio;
-
-                if (ctx && analyser) {
-                    try {
-                        const mediaSrc = ctx.createMediaElementSource(audio);
-                        mediaSrc.connect(analyser);
-                    } catch (e) {}
-                }
-
-                let fellBack = false;
-                e07State.fallbackTimer = setTimeout(() => {
-                    e07State.fallbackTimer = null;
-                    if (e07State.playing && e07State.audioEl === audio && audio.readyState < 2 && !fellBack) {
-                        fellBack = true;
-                        try {
-                            audio.pause();
-                            audio.removeAttribute('src');
-                        } catch (e) {}
-                        e07State.audioEl = null;
-                        startE07Synth();
-                    }
-                }, 1800);
-
-                audio.addEventListener('playing', () => {
-                    if (e07State.fallbackTimer) {
-                        clearTimeout(e07State.fallbackTimer);
-                        e07State.fallbackTimer = null;
-                    }
-                    if (e07State.playing && e07State.audioEl === audio) {
-                        e07State.phase = 'live';
-                        updateE07UI();
-                    }
-                });
-
-                audio.addEventListener('waiting', () => {
-                    if (e07State.playing && e07State.audioEl === audio) {
-                        e07State.phase = 'connecting';
-                        updateE07UI();
-                    }
-                });
-
-                audio.addEventListener('error', () => {
-                    if (e07State.fallbackTimer) {
-                        clearTimeout(e07State.fallbackTimer);
-                        e07State.fallbackTimer = null;
-                    }
-                    if (e07State.playing && e07State.audioEl === audio && !fellBack) {
-                        fellBack = true;
-                        e07State.audioEl = null;
-                        startE07Synth();
-                    }
-                });
-
-                const playPromise = audio.play();
-                if (playPromise && typeof playPromise.catch === 'function') {
-                    playPromise.catch(() => {
-                        if (e07State.fallbackTimer) {
-                            clearTimeout(e07State.fallbackTimer);
-                            e07State.fallbackTimer = null;
-                        }
-                        if (e07State.playing && e07State.audioEl === audio && !fellBack) {
-                            fellBack = true;
-                            e07State.audioEl = null;
-                            startE07Synth();
-                        }
-                    });
-                }
+                const tuner = getTunerSettings('e07');
+                const cfg = {
+                    station: 'e07',
+                    freqKhz: freqKhz || 17461,
+                    lowCut: 300,
+                    highCut: tuner.highCut,
+                    nr: tuner.nr,
+                    agcThresh: tuner.agcThresh,
+                    agcDecay: 1200,
+                    peakFreq: 1200,
+                    peakGainDb: 2,
+                    outLevel: tuner.volume / 100
+                };
+                startLiveRadio(e07State, cfg, updateE07UI, !!rotate, 0);
             }
 
             function toggleE07Playback(freqKhz) {
                 playSovietRelayClunk();
                 if (e07State.playing) {
+                    if (e07State.activeHost) hostCooldownUntil.set(e07State.activeHost, Date.now() + 60000);
                     stopE07Playback(true);
                 } else {
-                    startE07Playback(freqKhz);
+                    startE07Playback(freqKhz, true);
                 }
             }
 
@@ -3910,6 +4544,8 @@
 
                 const sched = scheduleData || computeLocalE07Schedule(Date.now());
                 e07State.schedule = sched;
+                e07State.targetMs = null;
+                e07State.activeEndStr = null;
 
                 const out = document.getElementById('signal-output');
                 out.classList.add('is-visible');
@@ -3924,12 +4560,13 @@
                 if (activeSlot) {
                     const freqLabel = activeSlot.freqKhz ? `${activeSlot.freqKhz} kHz ${activeSlot.mode || 'USB'}` : (activeSlot.mode || 'USB');
                     const activeEndStr = formatUtcSlot(activeSlot.endUtcMs);
+                    e07State.activeEndStr = activeEndStr;
                     out.innerHTML = `
                         <div class="signal-frame" id="signal-frame">
                             <div class="packet-card">
                                 <div class="pip-box">
                                     <div class="pip-radio-bar is-connecting" id="e07-radio-bar">
-                                        <span>E07 ENGLISH MAN // ${escapeHTML(freqLabel)}</span>
+                                        <span>${tr('e07Name')} // ${escapeHTML(freqLabel)}</span>
                                         <div class="pip-bars" aria-hidden="true">
                                             <span class="pip-bar pip-bar-1"></span>
                                             <span class="pip-bar pip-bar-2"></span>
@@ -3941,13 +4578,14 @@
                                         <canvas id="radio-wave-canvas" class="radio-wave-canvas"></canvas>
                                     </div>
                                     <div class="pip-controls">
-                                        <button type="button" id="e07-toggle-btn" class="term-btn pip-btn">ОТБОЙ</button>
-                                        <span id="e07-status" class="pip-status is-active">УСТАНОВКА СВЯЗИ...</span>
+                                        <button type="button" id="e07-toggle-btn" class="term-btn pip-btn">${tr('radioDisconnect')}</button>
+                                        <span id="e07-status" class="pip-status is-active">${tr('radioConnecting')}</span>
                                     </div>
+                                    ${buildRadioTunerHTML('e07')}
                                     <div class="e07-schedule-meta">
                                         <div class="e07-schedule-row">
-                                            <span>СТАТУС: ПЕРЕДАЧА АКТИВНА</span>
-                                            <span class="e07-schedule-muted">ДО ${escapeHTML(activeEndStr)}</span>
+                                            <span id="e07-active-lbl">${tr('e07Active')}</span>
+                                            <span id="e07-until-lbl" class="e07-schedule-muted">${tr('e07Until')} ${escapeHTML(activeEndStr)}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -3957,9 +4595,10 @@
 
                     const btn = document.getElementById('e07-toggle-btn');
                     if (btn) btn.addEventListener('click', () => toggleE07Playback(activeSlot.freqKhz));
+                    bindRadioTunerEvents('e07', e07State);
 
                     activateSettledExpand(!!animateExpand);
-                    startE07Playback(activeSlot.freqKhz);
+                    startE07Playback(activeSlot.freqKhz, false);
 
                     e07State.countdownTimer = setInterval(async () => {
                         if (!activeCoord || activeCoord.key !== 'coord_70.0_70.0') {
@@ -3978,6 +4617,7 @@
                 }
 
                 const targetMs = nextSlot ? nextSlot.startUtcMs : (nowMs + 3600000);
+                e07State.targetMs = targetMs;
                 const hhmm = formatCountdownHHMM(targetMs - nowMs);
                 const nextFreqLabel = nextSlot && nextSlot.freqKhz
                     ? `${nextSlot.freqKhz} kHz ${nextSlot.mode || 'USB'}`
@@ -3993,22 +4633,21 @@
                         <div class="packet-card">
                             <div class="pip-box">
                                 <div class="pip-radio-bar" id="e07-radio-bar">
-                                    <span>E07 ENGLISH MAN // ${escapeHTML(nextFreqLabel)}</span>
+                                    <span>${tr('e07Name')} // ${escapeHTML(nextFreqLabel)}</span>
                                     <div class="pip-bars" aria-hidden="true">
                                         <span class="pip-bar pip-bar-1"></span>
                                         <span class="pip-bar pip-bar-2"></span>
                                         <span class="pip-bar pip-bar-3"></span>
                                         <span class="pip-bar pip-bar-4"></span>
-                                        <span class="pip-bar pip-bar-5"></span>
                                     </div>
                                 </div>
                                 <div class="e07-countdown-box" id="e07-countdown-text">
-                                    СЛЕДУЮЩИЙ СЕАНС ЧЕРЕЗ ${escapeHTML(hhmm)}
+                                    ${tr('e07NextIn')} ${escapeHTML(hhmm)}
                                 </div>
                                 <div class="e07-schedule-meta">
                                     <div class="e07-schedule-row">
-                                        <span>РАСПИСАНИЕ (UTC):</span>
-                                        <span class="e07-schedule-muted">ВТ/ПТ 15:00 · ЧТ/СБ 10:00</span>
+                                        <span id="e07-sched-lbl">${tr('e07SchedLabel')}</span>
+                                        <span id="e07-sched-days" class="e07-schedule-muted">${tr('e07SchedDays')}</span>
                                     </div>
                                     ${upcomingRows}
                                 </div>
@@ -4035,9 +4674,87 @@
                         return;
                     }
                     if (cdEl) {
-                        cdEl.textContent = `СЛЕДУЮЩИЙ СЕАНС ЧЕРЕЗ ${formatCountdownHHMM(diff)}`;
+                        cdEl.textContent = `${tr('e07NextIn')} ${formatCountdownHHMM(diff)}`;
                     }
                 }, 1000);
+            }
+
+            function applyLanguageUI() {
+                document.title = tr('pageTitle');
+
+                const ruBtn = document.getElementById('nsa-lang-ru');
+                const enBtn = document.getElementById('nsa-lang-en');
+                if (ruBtn) {
+                    ruBtn.textContent = currentLang === 'ru' ? '(RU-RAW)' : 'RU-RAW';
+                    ruBtn.classList.toggle('is-active', currentLang === 'ru');
+                }
+                if (enBtn) {
+                    enBtn.textContent = currentLang === 'en' ? '(EN-US)' : 'EN-US';
+                    enBtn.classList.toggle('is-active', currentLang === 'en');
+                }
+
+                const searchBtn = document.getElementById('retrieve-btn');
+                if (searchBtn) searchBtn.textContent = tr('search');
+
+                const banner = document.getElementById('cooldown-banner');
+                if (banner) banner.textContent = tr('lockout');
+
+                const errEl = document.getElementById('coord-error');
+                if (errEl && (errEl.textContent === I18N.ru.errInvalid || errEl.textContent === I18N.en.errInvalid)) {
+                    errEl.textContent = tr('errInvalid');
+                }
+
+                const emptyEl = document.querySelector('.empty-signal');
+                if (emptyEl) emptyEl.textContent = tr('noSignal');
+
+                document.querySelectorAll('.morse-play-btn').forEach(btn => {
+                    btn.textContent = btn.classList.contains('is-playing') ? tr('morseStop') : tr('morsePlay');
+                });
+                document.querySelectorAll('.morse-carrier').forEach(el => {
+                    if (!el.classList.contains('is-tx')) {
+                        el.textContent = tr('standby');
+                    } else if (el.textContent === I18N.ru.carrierHigh || el.textContent === I18N.en.carrierHigh) {
+                        el.textContent = tr('carrierHigh');
+                    } else {
+                        el.textContent = tr('carrierLow');
+                    }
+                });
+
+                updatePipUI();
+                updateBuzzerUI();
+                updateE07UI();
+
+                const tunerPanel = document.getElementById('radio-tuner-panel');
+                if (tunerPanel) {
+                    const tTitle = document.getElementById('tuner-title-lbl');
+                    const tReset = document.getElementById('tuner-reset-btn');
+                    const tVol = document.getElementById('tuner-vol-lbl');
+                    const tBw = document.getElementById('tuner-bw-lbl');
+                    const tNr = document.getElementById('tuner-nr-lbl');
+                    const tAgc = document.getElementById('tuner-agc-lbl');
+                    const bwInput = document.getElementById('tuner-bw');
+                    const agcInput = document.getElementById('tuner-agc');
+                    const bwVal = document.getElementById('tuner-bw-val');
+                    const agcVal = document.getElementById('tuner-agc-val');
+
+                    if (tTitle) tTitle.textContent = tr('tunerTitle');
+                    if (tReset) tReset.textContent = tr('tunerReset');
+                    if (tVol) tVol.textContent = tr('tunerVol');
+                    if (tBw) tBw.textContent = tr('tunerBw');
+                    if (tNr) tNr.textContent = tr('tunerNr');
+                    if (tAgc) tAgc.textContent = tr('tunerAgc');
+                    if (bwInput && bwVal) bwVal.textContent = `${bwInput.value} ${tr('unitHz')}`;
+                    if (agcInput && agcVal) agcVal.textContent = `${agcInput.value} ${tr('unitDbm')}`;
+                }
+            }
+
+            function setLanguage(lang) {
+                const next = lang === 'en' ? 'en' : 'ru';
+                if (next === currentLang) return;
+                playReedSwitchClick();
+                currentLang = next;
+                try { localStorage.setItem(LANG_STORE_KEY, next); } catch (e) {}
+                applyLanguageUI();
             }
 
             function extractYoutubeId(url) {
@@ -4191,7 +4908,7 @@
 
                 if (!normX || !normY) {
                     playTerminalErrorSound();
-                    errEl.textContent = 'ОШИБКА: НЕВЕРНЫЙ ВВОД';
+                    errEl.textContent = tr('errInvalid');
                     return;
                 }
 
@@ -4407,7 +5124,7 @@
                 }
 
                 if (packets.length === 0) {
-                    html += `<div class="empty-signal">СИГНАЛ НЕ ОБНАРУЖЕН</div>`;
+                    html += `<div class="empty-signal">${tr('noSignal')}</div>`;
                     html += `</div>`;
                     out.innerHTML = html;
                 } else {
@@ -4468,14 +5185,14 @@
                             playBtn.type = 'button';
                             playBtn.id = 'morse-btn-' + p.id;
                             playBtn.className = 'term-btn morse-play-btn';
-                            playBtn.textContent = 'ПУСК';
+                            playBtn.textContent = tr('morsePlay');
                             playBtn.onclick = () => toggleMorsePlayback(p.id);
                             controls.appendChild(playBtn);
 
                             const carrier = document.createElement('span');
                             carrier.id = 'morse-carrier-' + p.id;
                             carrier.className = 'morse-carrier';
-                            carrier.textContent = 'ОЖИДАНИЕ';
+                            carrier.textContent = tr('standby');
                             controls.appendChild(carrier);
 
                             morseBox.appendChild(controls);
@@ -4668,6 +5385,7 @@
 
             document.addEventListener('DOMContentLoaded', () => {
                 buildeszBarrelMap();
+                initBarrelPointerMap();
 
                 const bx = initCoordBox('coord-box-x', 'coord-x', true);
                 const by = initCoordBox('coord-box-y', 'coord-y', false);
@@ -4684,8 +5402,11 @@
                     playSovietRelayClunk();
                     skipCooldownByOwner();
                 });
+                document.getElementById('nsa-lang-ru').addEventListener('click', () => setLanguage('ru'));
+                document.getElementById('nsa-lang-en').addEventListener('click', () => setLanguage('en'));
                 document.getElementById('esz-scroll').addEventListener('scroll', updateExpandLines, { passive: true });
 
+                applyLanguageUI();
                 verifyAuthWithDatabase();
                 scheduleWindowReset();
                 startCooldownMonitor(false);
