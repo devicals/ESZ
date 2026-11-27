@@ -1127,6 +1127,7 @@
                 day: `${WORKER_BASE}?mode=day`,
                 night: `${WORKER_BASE}?mode=night`
             };
+            const BUZZER_STREAM = `${WORKER_BASE}?station=s28&action=stream`;
 
             let sessionUser = null;
             let isOwner = false;
@@ -1147,7 +1148,7 @@
             let isEnteringCooldown = false;
 
             function isSpecialCoordKey(key) {
-                return key === 'coord_00.0_00.0' || key === 'coord_70.0_70.0';
+                return key === 'coord_00.0_00.0' || key === 'coord_00.0_70.0' || key === 'coord_70.0_70.0';
             }
 
             let audioCtx = null;
@@ -2821,6 +2822,7 @@
 
                 stopMorsePlayback();
                 stopPipPlayback();
+                stopBuzzerPlayback();
                 stopE07Playback();
 
                 const packet = currentPackets.find(p => p.id === packetId);
@@ -3049,6 +3051,7 @@
 
             function startPipPlayback() {
                 stopMorsePlayback();
+                stopBuzzerPlayback();
                 stopE07Playback();
                 stopPipPlayback();
 
@@ -3154,6 +3157,7 @@
 
             function renderPipResult() {
                 stopMorsePlayback();
+                stopBuzzerPlayback();
                 stopE07Playback();
                 stopPipPlayback();
 
@@ -3190,6 +3194,347 @@
 
                 activateSettledExpand(true);
                 startPipPlayback();
+            }
+
+            let buzzerState = {
+                playing: false,
+                phase: 'standby',
+                audioEl: null,
+                fallbackTimer: null,
+                synthTimer: null,
+                noiseNode: null,
+                noiseGain: null,
+                qsbOsc: null,
+                activeBuzz: null
+            };
+
+            function updateBuzzerUI() {
+                const btn = document.getElementById('buzzer-toggle-btn');
+                const statusEl = document.getElementById('buzzer-status');
+                const barEl = document.getElementById('buzzer-radio-bar');
+
+                if (btn) {
+                    if (buzzerState.playing) {
+                        btn.textContent = 'ОТБОЙ';
+                        btn.classList.add('is-playing');
+                    } else {
+                        btn.textContent = 'ПРИЁМ';
+                        btn.classList.remove('is-playing');
+                    }
+                }
+
+                if (barEl) {
+                    barEl.classList.toggle('is-connecting', buzzerState.playing && buzzerState.phase === 'connecting');
+                    barEl.classList.toggle('is-live', buzzerState.playing && buzzerState.phase === 'live');
+                }
+
+                if (statusEl) {
+                    if (!buzzerState.playing) {
+                        statusEl.textContent = 'ОЖИДАНИЕ';
+                        statusEl.classList.remove('is-active');
+                    } else if (buzzerState.phase === 'connecting') {
+                        statusEl.textContent = 'УСТАНОВКА СВЯЗИ...';
+                        statusEl.classList.add('is-active');
+                    } else {
+                        statusEl.textContent = 'ПРИЁМ';
+                        statusEl.classList.add('is-active');
+                    }
+                }
+            }
+
+            function stopBuzzerPlayback() {
+                buzzerState.playing = false;
+                buzzerState.phase = 'standby';
+                stopWaveLoop();
+
+                if (buzzerState.fallbackTimer) {
+                    clearTimeout(buzzerState.fallbackTimer);
+                    buzzerState.fallbackTimer = null;
+                }
+
+                if (buzzerState.audioEl) {
+                    try {
+                        buzzerState.audioEl.pause();
+                        buzzerState.audioEl.removeAttribute('src');
+                        buzzerState.audioEl.load();
+                    } catch (e) {}
+                    buzzerState.audioEl = null;
+                }
+
+                if (buzzerState.synthTimer) {
+                    clearInterval(buzzerState.synthTimer);
+                    buzzerState.synthTimer = null;
+                }
+
+                if (buzzerState.activeBuzz) {
+                    const b = buzzerState.activeBuzz;
+                    buzzerState.activeBuzz = null;
+                    try {
+                        if (audioCtx && b.gain) {
+                            const now = audioCtx.currentTime;
+                            b.gain.gain.cancelScheduledValues(now);
+                            b.gain.gain.setValueAtTime(b.gain.gain.value, now);
+                            b.gain.gain.linearRampToValueAtTime(0, now + 0.015);
+                        }
+                        if (b.osc1) b.osc1.stop(audioCtx ? audioCtx.currentTime + 0.02 : 0);
+                        if (b.osc2) b.osc2.stop(audioCtx ? audioCtx.currentTime + 0.02 : 0);
+                    } catch (e) {}
+                }
+
+                if (buzzerState.noiseNode) {
+                    try { buzzerState.noiseNode.stop(); } catch (e) {}
+                    buzzerState.noiseNode = null;
+                }
+
+                if (buzzerState.qsbOsc) {
+                    try { buzzerState.qsbOsc.stop(); } catch (e) {}
+                    buzzerState.qsbOsc = null;
+                }
+
+                buzzerState.noiseGain = null;
+                updateBuzzerUI();
+                drawWaveOnce(false, false);
+            }
+
+            function startBuzzerSynth() {
+                const ctx = ensureAudioContext();
+                const analyser = getRadioAnalyser();
+                if (!ctx || !analyser || !buzzerState.playing) return;
+
+                buzzerState.phase = 'live';
+                updateBuzzerUI();
+
+                const bufSize = ctx.sampleRate * 3;
+                const noiseBuffer = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+                let lastOut = 0;
+                for (let i = 0; i < bufSize; i++) {
+                    const white = Math.random() * 2 - 1;
+                    output[i] = (lastOut + 0.045 * white) / 1.045;
+                    lastOut = output[i];
+                }
+
+                const noise = ctx.createBufferSource();
+                noise.buffer = noiseBuffer;
+                noise.loop = true;
+
+                const bandpass = ctx.createBiquadFilter();
+                bandpass.type = 'bandpass';
+                bandpass.frequency.value = 1100;
+                bandpass.Q.value = 1.25;
+
+                const noiseGain = ctx.createGain();
+                noiseGain.gain.value = 0.085;
+
+                const qsbOsc = ctx.createOscillator();
+                const qsbGain = ctx.createGain();
+                qsbOsc.frequency.value = 0.09;
+                qsbGain.gain.value = 0.028;
+                qsbOsc.connect(qsbGain);
+                qsbGain.connect(noiseGain.gain);
+
+                noise.connect(bandpass);
+                bandpass.connect(noiseGain);
+                noiseGain.connect(analyser);
+
+                noise.start();
+                qsbOsc.start();
+
+                buzzerState.noiseNode = noise;
+                buzzerState.noiseGain = noiseGain;
+                buzzerState.qsbOsc = qsbOsc;
+
+                function emitBuzz() {
+                    if (!buzzerState.playing) return;
+                    try {
+                        const now = ctx.currentTime;
+                        const osc1 = ctx.createOscillator();
+                        const osc2 = ctx.createOscillator();
+                        const g1 = ctx.createGain();
+                        const g2 = ctx.createGain();
+                        const filter = ctx.createBiquadFilter();
+                        const master = ctx.createGain();
+
+                        osc1.type = 'sawtooth';
+                        osc1.frequency.setValueAtTime(107, now);
+                        g1.gain.setValueAtTime(0.7, now);
+
+                        osc2.type = 'square';
+                        osc2.frequency.setValueAtTime(107.8, now);
+                        g2.gain.setValueAtTime(0.3, now);
+
+                        filter.type = 'bandpass';
+                        filter.frequency.setValueAtTime(760, now);
+                        filter.Q.setValueAtTime(1.15, now);
+
+                        master.gain.setValueAtTime(0, now);
+                        master.gain.linearRampToValueAtTime(0.135, now + 0.022);
+                        master.gain.setValueAtTime(0.135, now + 1.05);
+                        master.gain.linearRampToValueAtTime(0, now + 1.10);
+
+                        osc1.connect(g1);
+                        osc2.connect(g2);
+                        g1.connect(filter);
+                        g2.connect(filter);
+                        filter.connect(master);
+                        master.connect(analyser);
+
+                        osc1.start(now);
+                        osc2.start(now);
+                        osc1.stop(now + 1.12);
+                        osc2.stop(now + 1.12);
+
+                        buzzerState.activeBuzz = { osc1, osc2, gain: master };
+                    } catch (e) {}
+                }
+
+                emitBuzz();
+                buzzerState.synthTimer = setInterval(emitBuzz, 2400);
+            }
+
+            function startBuzzerPlayback() {
+                stopMorsePlayback();
+                stopPipPlayback();
+                stopE07Playback();
+                stopBuzzerPlayback();
+
+                buzzerState.playing = true;
+                buzzerState.phase = 'connecting';
+                updateBuzzerUI();
+                startWaveLoop(() => buzzerState);
+
+                const streamUrl = BUZZER_STREAM;
+                const isHttpsPage = window.location.protocol === 'https:';
+                const isHttpStream = /^http:\/\//i.test(streamUrl);
+
+                if (isHttpsPage && isHttpStream) {
+                    startBuzzerSynth();
+                    return;
+                }
+
+                const ctx = ensureAudioContext();
+                const analyser = getRadioAnalyser();
+
+                const audio = new Audio();
+                audio.crossOrigin = 'anonymous';
+                audio.preload = 'none';
+                audio.src = streamUrl;
+                buzzerState.audioEl = audio;
+
+                if (ctx && analyser) {
+                    try {
+                        const mediaSrc = ctx.createMediaElementSource(audio);
+                        mediaSrc.connect(analyser);
+                    } catch (e) {}
+                }
+
+                let fellBack = false;
+                buzzerState.fallbackTimer = setTimeout(() => {
+                    buzzerState.fallbackTimer = null;
+                    if (buzzerState.playing && buzzerState.audioEl === audio && audio.readyState < 2 && !fellBack) {
+                        fellBack = true;
+                        try {
+                            audio.pause();
+                            audio.removeAttribute('src');
+                        } catch (e) {}
+                        buzzerState.audioEl = null;
+                        startBuzzerSynth();
+                    }
+                }, 1800);
+
+                audio.addEventListener('playing', () => {
+                    if (buzzerState.fallbackTimer) {
+                        clearTimeout(buzzerState.fallbackTimer);
+                        buzzerState.fallbackTimer = null;
+                    }
+                    if (buzzerState.playing && buzzerState.audioEl === audio) {
+                        buzzerState.phase = 'live';
+                        updateBuzzerUI();
+                    }
+                });
+
+                audio.addEventListener('waiting', () => {
+                    if (buzzerState.playing && buzzerState.audioEl === audio) {
+                        buzzerState.phase = 'connecting';
+                        updateBuzzerUI();
+                    }
+                });
+
+                audio.addEventListener('error', () => {
+                    if (buzzerState.fallbackTimer) {
+                        clearTimeout(buzzerState.fallbackTimer);
+                        buzzerState.fallbackTimer = null;
+                    }
+                    if (buzzerState.playing && buzzerState.audioEl === audio && !fellBack) {
+                        fellBack = true;
+                        buzzerState.audioEl = null;
+                        startBuzzerSynth();
+                    }
+                });
+
+                const playPromise = audio.play();
+                if (playPromise && typeof playPromise.catch === 'function') {
+                    playPromise.catch(() => {
+                        if (buzzerState.fallbackTimer) {
+                            clearTimeout(buzzerState.fallbackTimer);
+                            buzzerState.fallbackTimer = null;
+                        }
+                        if (buzzerState.playing && buzzerState.audioEl === audio && !fellBack) {
+                            fellBack = true;
+                            buzzerState.audioEl = null;
+                            startBuzzerSynth();
+                        }
+                    });
+                }
+            }
+
+            function toggleBuzzerPlayback() {
+                playSovietRelayClunk();
+                if (buzzerState.playing) {
+                    stopBuzzerPlayback();
+                } else {
+                    startBuzzerPlayback();
+                }
+            }
+
+            function renderBuzzerResult() {
+                stopMorsePlayback();
+                stopPipPlayback();
+                stopE07Playback();
+                stopBuzzerPlayback();
+
+                const out = document.getElementById('signal-output');
+                out.classList.add('is-visible');
+                out.innerHTML = `
+                    <div class="signal-frame" id="signal-frame">
+                        <div class="packet-card">
+                            <div class="pip-box">
+                                <div class="pip-radio-bar is-connecting" id="buzzer-radio-bar">
+                                    <span>S28 ЖУЖЖАЛКА // 4625 kHz USB</span>
+                                    <div class="pip-bars" aria-hidden="true">
+                                        <span class="pip-bar pip-bar-1"></span>
+                                        <span class="pip-bar pip-bar-2"></span>
+                                        <span class="pip-bar pip-bar-3"></span>
+                                        <span class="pip-bar pip-bar-4"></span>
+                                    </div>
+                                </div>
+                                <div class="radio-wave-wrap">
+                                    <canvas id="radio-wave-canvas" class="radio-wave-canvas"></canvas>
+                                </div>
+                                <div class="pip-controls">
+                                    <button type="button" id="buzzer-toggle-btn" class="term-btn pip-btn">ОТБОЙ</button>
+                                    <span id="buzzer-status" class="pip-status is-active">УСТАНОВКА СВЯЗИ...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                const btn = document.getElementById('buzzer-toggle-btn');
+                if (btn) btn.addEventListener('click', toggleBuzzerPlayback);
+
+                activateSettledExpand(true);
+                startBuzzerPlayback();
             }
 
             const E07_SLOT_DURATION_MS = 15 * 60 * 1000;
@@ -3463,6 +3808,7 @@
             function startE07Playback(freqKhz) {
                 stopMorsePlayback();
                 stopPipPlayback();
+                stopBuzzerPlayback();
                 stopE07Playback(true);
 
                 e07State.playing = true;
@@ -3559,6 +3905,7 @@
             function renderE07Result(scheduleData, animateExpand) {
                 stopMorsePlayback();
                 stopPipPlayback();
+                stopBuzzerPlayback();
                 stopE07Playback(false);
 
                 const sched = scheduleData || computeLocalE07Schedule(Date.now());
@@ -3780,6 +4127,7 @@
             function showAwaitingSequence(nx, ny) {
                 stopMorsePlayback();
                 stopPipPlayback();
+                stopBuzzerPlayback();
                 stopE07Playback(false);
 
                 const scrollEl = document.getElementById('esz-scroll');
@@ -3880,6 +4228,26 @@
                     isSearching = false;
                     currentPackets = [];
                     renderPipResult();
+                    if (reachedLimit) {
+                        finalizeFifthSearchCooldown();
+                    }
+                    return;
+                }
+
+                if (nx === '00.0' && ny === '70.0') {
+                    const totalTarget = travelMs + arriveFlashMs + randomMs;
+                    const elapsed = performance.now() - startTime;
+                    const remaining = Math.max(0, totalTarget - elapsed);
+                    if (remaining > 0) {
+                        await new Promise(res => setTimeout(res, remaining));
+                    }
+                    if (token !== queryToken) {
+                        isSearching = false;
+                        return;
+                    }
+                    isSearching = false;
+                    currentPackets = [];
+                    renderBuzzerResult();
                     if (reachedLimit) {
                         finalizeFifthSearchCooldown();
                     }
@@ -4014,6 +4382,7 @@
                 if (!activeCoord) return;
                 stopMorsePlayback();
                 stopPipPlayback();
+                stopBuzzerPlayback();
                 stopE07Playback(false);
 
                 const out = document.getElementById('signal-output');
